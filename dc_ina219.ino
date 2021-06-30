@@ -20,6 +20,13 @@ void setupPinMode()
     pinMode(BTN_MODE_SETUP, INPUT);
     pinMode(BTN_MODE_RUN, INPUT);
 
+    pinMode(DATA_PIN_LED, OUTPUT);
+    pinMode(LATCH_PIN_LED, OUTPUT);
+    pinMode(CLOCK_PIN_LED, OUTPUT);
+    pinMode(DATA_PIN_MOTOR, OUTPUT);
+    pinMode(LATCH_PIN_MOTOR, OUTPUT);
+    pinMode(CLOCK_PIN_MOTOR, OUTPUT);
+
     
 }
 
@@ -102,12 +109,36 @@ void setup()
 
 }
 
+bool test = false;
+float current_mA_test = 0;
 void loop()
 {
     // scannerI2cAddress ();
-    printDataI2c();
-    delay (1000);
+    // printDataI2c();
+    // delay (1000);
+    if(digitalRead(BTN_IN_M1) && test)
+    {   
+        delay(200);
+        Serial.println("up");
+        test = false;
+        digitalWrite(LATCH_PIN_MOTOR, LOW);
+        shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 128);   //1000 0000
+        digitalWrite(LATCH_PIN_MOTOR, HIGH);    
+    }
+    else if(!digitalRead(BTN_IN_M1) && !test)
+    {
+        delay(200);
+        Serial.println("down");
+        test = true;
+        digitalWrite(LATCH_PIN_MOTOR, LOW);
+        shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 64);    //0100 0000
+        digitalWrite(LATCH_PIN_MOTOR, HIGH);
 
+    }
 
     
+    current_mA_test = ina219[0].getCurrent_mA();
+    Serial.printf("Current %f", current_mA_test);
+    Serial.println("");
+    delay(500);
 }
