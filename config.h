@@ -35,8 +35,23 @@
 #define ADDRESS_INA_M4          0x43
 #define ADDRESS_INA_M5          0x44
 #define ADDRESS_INA_M6          0x45
+#define ADDRESS_INA_M7          0x46
+#define ADDRESS_INA_M8          0x47
+#define ADDRESS_INA_M9          0x48
+#define ADDRESS_INA_M10         0x49
+#define ADDRESS_INA_M11         0x50
 
+#define MAX_ALL_MOTOR           6
+// #define MAX_ALL_MOTOR           12
 
-#define MAX_ALL_MOTOR           12
+enum
+{
+    MOTOR_1 = 0,
+    MOTOR_2,
+    MOTOR_3,
+    MOTOR_4,
+    MOTOR_5,
+    MOTOR_6
+};
 
 #endif
