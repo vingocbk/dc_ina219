@@ -42,6 +42,7 @@
 #define ADDRESS_INA_M11         0x50
 
 #define MAX_ALL_MOTOR           6
+#define MAX_NUMBER_MOTOR        6
 // #define MAX_ALL_MOTOR           12
 
 enum
@@ -52,6 +53,15 @@ enum
     MOTOR_4,
     MOTOR_5,
     MOTOR_6
+};
+
+
+
+enum
+{
+    MOTOR_STOP = 0,
+    MOTOR_OPEN,
+    MOTOR_CLOSE
 };
 
 #endif

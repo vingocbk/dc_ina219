@@ -6,7 +6,6 @@ struct INA219INFO Ina219_info;
 Adafruit_INA219 ina219[MAX_ALL_MOTOR];
 
 
-
 void sendDatatoApp()
 {
     String data = "{\"11\":\"";
@@ -137,6 +136,38 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
 
 }
 
+void check_current_motor_1()
+{
+
+}
+
+void check_current_motor_2()
+{
+
+}
+
+void check_current_motor_3()
+{
+
+}
+
+void check_current_motor_4()
+{
+
+}
+
+void check_current_motor_5()
+{
+
+}
+
+void check_current_motor_6()
+{
+
+}
+
+
+
 void setup()
 {
     Serial.begin (SERIAL_BAUDRATE);  
@@ -188,7 +219,6 @@ void loop()
         digitalWrite(LATCH_PIN_MOTOR, LOW);
         shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 64);    //0100 0000
         digitalWrite(LATCH_PIN_MOTOR, HIGH);
-
     }
     // printDataI2c();
     // delay(500);
@@ -206,6 +236,12 @@ void loop()
     //     Serial.printf("BusVoltage 6: %d  --  getCurrent_mA 6: %d", int(ina219[MOTOR_6].getBusVoltage_V()), int(ina219[MOTOR_6].getCurrent_mA()));
     //     sendDatatoApp();
     // }
-    sendDatatoApp();
-    delay(500);
+    // sendDatatoApp();
+    // delay(500);
+
+
+
+
+
+
 }
