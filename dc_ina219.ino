@@ -1,51 +1,89 @@
 #include "dc_ina219.h"
 
 BluetoothSerial SerialBT;
-struct INA219INFO Ina219_info;
+struct INA219INFO ina219_info;
+struct SETUPMOTOR setup_motor;
+struct RUNMOTOR run_motor;
+Adafruit_INA219 ina219[MAX_NUMBER_MOTOR];
 
-Adafruit_INA219 ina219[MAX_ALL_MOTOR];
+
+void readValueIna219()
+{
+    static uint32_t time_read_value = 0;
+    if(millis() >= time_read_value + 500)
+    {
+        time_read_value = millis();
+        setup_motor.value_current[MOTOR_1] = ina219[MOTOR_1].getCurrent_mA();
+        setup_motor.value_current[MOTOR_2] = ina219[MOTOR_2].getCurrent_mA();
+        setup_motor.value_current[MOTOR_3] = ina219[MOTOR_3].getCurrent_mA();
+        setup_motor.value_current[MOTOR_4] = ina219[MOTOR_4].getCurrent_mA();
+        setup_motor.value_current[MOTOR_5] = ina219[MOTOR_5].getCurrent_mA();
+        setup_motor.value_current[MOTOR_6] = ina219[MOTOR_6].getCurrent_mA();
+
+        setup_motor.value_bus_voltage[MOTOR_1] = ina219[MOTOR_1].getBusVoltage_V();
+        setup_motor.value_bus_voltage[MOTOR_2] = ina219[MOTOR_2].getBusVoltage_V();
+        setup_motor.value_bus_voltage[MOTOR_3] = ina219[MOTOR_3].getBusVoltage_V();
+        setup_motor.value_bus_voltage[MOTOR_4] = ina219[MOTOR_4].getBusVoltage_V();
+        setup_motor.value_bus_voltage[MOTOR_5] = ina219[MOTOR_5].getBusVoltage_V();
+        setup_motor.value_bus_voltage[MOTOR_6] = ina219[MOTOR_6].getBusVoltage_V();
+
+    }
+}
 
 
 void sendDatatoApp()
 {
     String data = "{\"11\":\"";
-    data += String(int(ina219[MOTOR_1].getBusVoltage_V()));
+    data += String(setup_motor.value_bus_voltage[MOTOR_1], 1);
     data += "\",\"21\":\"";
-    data += String(int(ina219[MOTOR_2].getBusVoltage_V()));
+    data += String(setup_motor.value_bus_voltage[MOTOR_2], 1);
     data += "\",\"31\":\"";
-    data += String(int(ina219[MOTOR_3].getBusVoltage_V()));
+    data += String(setup_motor.value_bus_voltage[MOTOR_3], 1);
     data += "\",\"41\":\"";
-    data += String(int(ina219[MOTOR_4].getBusVoltage_V()));
+    data += String(setup_motor.value_bus_voltage[MOTOR_4], 1);
     data += "\",\"51\":\"";
-    data += String(int(ina219[MOTOR_5].getBusVoltage_V()));
+    data += String(setup_motor.value_bus_voltage[MOTOR_5], 1);
     data += "\",\"61\":\"";
-    data += String(int(ina219[MOTOR_6].getBusVoltage_V()));
+    data += String(setup_motor.value_bus_voltage[MOTOR_6], 1);
     //--------------------------
     data += "\",\"12\":\"";
-    data += String(int(ina219[MOTOR_1].getCurrent_mA()));
+    data += String(setup_motor.value_current[MOTOR_1], 1);
     data += "\",\"22\":\"";
-    data += String(int(ina219[MOTOR_2].getCurrent_mA()));
+    data += String(setup_motor.value_current[MOTOR_2], 1);
     data += "\",\"32\":\"";
-    data += String(int(ina219[MOTOR_3].getCurrent_mA()));
+    data += String(setup_motor.value_current[MOTOR_3], 1);
     data += "\",\"42\":\"";
-    data += String(int(ina219[MOTOR_4].getCurrent_mA()));
+    data += String(setup_motor.value_current[MOTOR_4], 1);
     data += "\",\"52\":\"";
-    data += String(int(ina219[MOTOR_5].getCurrent_mA()));
+    data += String(setup_motor.value_current[MOTOR_5], 1);
     data += "\",\"62\":\"";
-    data += String(int(ina219[MOTOR_6].getCurrent_mA()));
+    data += String(setup_motor.value_current[MOTOR_6], 1);
     //------------------------------
     data += "\",\"13\":\"";
-    data += String(10);
+    data += String(setup_motor.define_max_current[MOTOR_1]*VALUE_CONVERT);
     data += "\",\"23\":\"";
-    data += String(10);
+    data += String(setup_motor.define_max_current[MOTOR_2]*VALUE_CONVERT);
     data += "\",\"33\":\"";
-    data += String(10);
+    data += String(setup_motor.define_max_current[MOTOR_3]*VALUE_CONVERT);
     data += "\",\"43\":\"";
-    data += String(10);
+    data += String(setup_motor.define_max_current[MOTOR_4]*VALUE_CONVERT);
     data += "\",\"53\":\"";
-    data += String(10);
+    data += String(setup_motor.define_max_current[MOTOR_5]*VALUE_CONVERT);
     data += "\",\"63\":\"";
-    data += String(10);
+    data += String(setup_motor.define_max_current[MOTOR_6]*VALUE_CONVERT);
+
+    data += "\",\"14\":\"";
+    data += String(setup_motor.define_time_return[MOTOR_1]*VALUE_CONVERT);
+    data += "\",\"24\":\"";
+    data += String(setup_motor.define_time_return[MOTOR_2]*VALUE_CONVERT);
+    data += "\",\"34\":\"";
+    data += String(setup_motor.define_time_return[MOTOR_3]*VALUE_CONVERT);
+    data += "\",\"44\":\"";
+    data += String(setup_motor.define_time_return[MOTOR_4]*VALUE_CONVERT);
+    data += "\",\"54\":\"";
+    data += String(setup_motor.define_time_return[MOTOR_5]*VALUE_CONVERT);
+    data += "\",\"64\":\"";
+    data += String(setup_motor.define_time_return[MOTOR_6]*VALUE_CONVERT);
     data += "\"}";
     for(int i = 0; i<data.length(); i++){
         SerialBT.write(data[i]);
@@ -71,8 +109,69 @@ void setupPinMode()
     
 }
 
+void setupI2c()
+{
+    ina219[MOTOR_1] = Adafruit_INA219(ADDRESS_INA_M1);
+    ina219[MOTOR_2] = Adafruit_INA219(ADDRESS_INA_M2);
+    ina219[MOTOR_3] = Adafruit_INA219(ADDRESS_INA_M3);
+    ina219[MOTOR_4] = Adafruit_INA219(ADDRESS_INA_M4);
+    ina219[MOTOR_5] = Adafruit_INA219(ADDRESS_INA_M5);
+    ina219[MOTOR_6] = Adafruit_INA219(ADDRESS_INA_M6);
+    ina219[MOTOR_1].begin();
+    ina219[MOTOR_2].begin();
+    ina219[MOTOR_3].begin();
+    ina219[MOTOR_4].begin();
+    ina219[MOTOR_5].begin();
+    ina219[MOTOR_6].begin();
+    delay(10);
+}
 
 
+void loadDataBegin()
+{
+    run_motor.isModeConfig = true;
+    run_motor.beginChangeStep = true;
+    run_motor.mode_run_open_step = OPEN_STEP_1;
+    run_motor.mode_run_close_step = CLOSE_STEP_1;
+
+    setup_motor.define_max_current[MOTOR_1] = EEPROM.read(EEPROM_MAX_CURRENT_1);
+    ECHO("define_max_current[MOTOR_1] : ");
+    ECHOLN(setup_motor.define_max_current[MOTOR_1]*VALUE_CONVERT);
+    setup_motor.define_max_current[MOTOR_2] = EEPROM.read(EEPROM_MAX_CURRENT_2);
+    ECHO("define_max_current[MOTOR_2] : ");
+    ECHOLN(setup_motor.define_max_current[MOTOR_2]*VALUE_CONVERT);
+    setup_motor.define_max_current[MOTOR_3] = EEPROM.read(EEPROM_MAX_CURRENT_3);
+    ECHO("define_max_current[MOTOR_3] : ");
+    ECHOLN(setup_motor.define_max_current[MOTOR_3]*VALUE_CONVERT);
+    setup_motor.define_max_current[MOTOR_4] = EEPROM.read(EEPROM_MAX_CURRENT_4);
+    ECHO("define_max_current[MOTOR_4] : ");
+    ECHOLN(setup_motor.define_max_current[MOTOR_4]*VALUE_CONVERT);
+    setup_motor.define_max_current[MOTOR_5] = EEPROM.read(EEPROM_MAX_CURRENT_5);
+    ECHO("define_max_current[MOTOR_5] : ");
+    ECHOLN(setup_motor.define_max_current[MOTOR_5]*VALUE_CONVERT);
+    setup_motor.define_max_current[MOTOR_6] = EEPROM.read(EEPROM_MAX_CURRENT_6);
+    ECHO("define_max_current[MOTOR_6] : ");
+    ECHOLN(setup_motor.define_max_current[MOTOR_6]*VALUE_CONVERT);
+    
+    setup_motor.define_time_return[MOTOR_1] = EEPROM.read(EEPROM_TIME_RETURN_1);
+    ECHO("time_return[MOTOR_1] : ");
+    ECHOLN(setup_motor.define_time_return[MOTOR_1]*VALUE_CONVERT);
+    setup_motor.define_time_return[MOTOR_2] = EEPROM.read(EEPROM_TIME_RETURN_2);
+    ECHO("time_return[MOTOR_2] : ");
+    ECHOLN(setup_motor.define_time_return[MOTOR_2]*VALUE_CONVERT);
+    setup_motor.define_time_return[MOTOR_3] = EEPROM.read(EEPROM_TIME_RETURN_3);
+    ECHO("time_return[MOTOR_3] : ");
+    ECHOLN(setup_motor.define_time_return[MOTOR_3]*VALUE_CONVERT);
+    setup_motor.define_time_return[MOTOR_4] = EEPROM.read(EEPROM_TIME_RETURN_4);
+    ECHO("time_return[MOTOR_4] : ");
+    ECHOLN(setup_motor.define_time_return[MOTOR_4]*VALUE_CONVERT);
+    setup_motor.define_time_return[MOTOR_5] = EEPROM.read(EEPROM_TIME_RETURN_5);
+    ECHO("time_return[MOTOR_5] : ");
+    ECHOLN(setup_motor.define_time_return[MOTOR_5]*VALUE_CONVERT);
+    setup_motor.define_time_return[MOTOR_6] = EEPROM.read(EEPROM_TIME_RETURN_6);
+    ECHO("time_return[MOTOR_6] : ");
+    ECHOLN(setup_motor.define_time_return[MOTOR_6]*VALUE_CONVERT);
+}
 
 
 void scannerI2cAddress()
@@ -81,7 +180,7 @@ void scannerI2cAddress()
     Serial.println ();
     Serial.println ("I2C scanner. Scanning ...");
 
-    Ina219_info.count = 0;
+    ina219_info.count = 0;
     for (uint8_t i = 8; i < 120; i++)
     {
         Wire.beginTransmission (i);          // Begin I2C transmission Address (i)
@@ -92,53 +191,286 @@ void scannerI2cAddress()
         Serial.print (" (0x");
         Serial.print (i, HEX);     // PCF8574 7 bit address
         Serial.println (")");
-        Ina219_info.address_ina[Ina219_info.count] = i;
-        Ina219_info.count++;
+        ina219_info.address_ina[ina219_info.count] = i;
+        ina219_info.count++;
         }
     }
     Serial.print ("Found ");      
-    Serial.print (Ina219_info.count, DEC);        // numbers of devices
+    Serial.print (ina219_info.count, DEC);        // numbers of devices
     Serial.println (" device(s).");
 }
 
 
-void printDataI2c()
-{
-    float shuntvoltage = 0;
-    float busvoltage = 0;
-    float current_mA = 0;
-    float loadvoltage = 0;
-    float power_mW = 0;
-
-    for (uint8_t i = 0; i < Ina219_info.count; i++)
-    {
-        shuntvoltage = ina219[i].getShuntVoltage_mV();
-        busvoltage = ina219[i].getBusVoltage_V();
-        current_mA = ina219[i].getCurrent_mA();
-        power_mW = ina219[i].getPower_mW();
-        loadvoltage = busvoltage + (shuntvoltage / 1000);
-        Serial.printf("Bus Voltage %f:   ", i); Serial.print(busvoltage); Serial.println(" V");
-        // Serial.printf("Shunt Voltage %d: ", i); Serial.print(shuntvoltage); Serial.println(" mV");
-        // Serial.printf("Load Voltage %d:  ", i); Serial.print(loadvoltage); Serial.println(" V");
-        Serial.printf("Current %f:       ", i); Serial.print(current_mA); Serial.println(" mA");
-        // Serial.printf("Power %d:         ", i); Serial.print(power_mW); Serial.println(" mW");
-        Serial.println("");
-    }
-
-    
-    
-    
-}
 
 
 void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
 {
+    switch (event)
+	{
+	case ESP_SPP_SRV_OPEN_EVT:
+		ECHOLN("Client Connected");
+        sendDatatoAppTicker.start();
+		break;
+    case ESP_SPP_CLOSE_EVT:
+        ECHOLN("Client Disconnected");
+        sendDatatoAppTicker.stop();
+		break;
+	case ESP_SPP_DATA_IND_EVT:	
+		if (param->data_ind.len < MAX_RESPONSE_LENGTH) 
+        {
+            String data;
+            for(int i = 0; i < param->data_ind.len; i++)
+            {
+                data += (char)param->data_ind.data[i];
+            }
+            ECHO("data bluetooth: ");
+            ECHOLN(data);
+            StaticJsonBuffer<MAX_RESPONSE_LENGTH> jsonBuffer;
+            JsonObject& rootData = jsonBuffer.parseObject(data);
+            if(run_motor.isModeConfig)
+            {
+				if (rootData.success())
+                {
+					String type = rootData["type"];
+					String name = rootData["name"];
+                    if(type == "run_no_step")
+                    {
+                        String data = rootData["command"];
+                        if(name == "motor1")
+                        {
+                            if(data == "open")
+                            {
+                                open_motor_1();
+                                checkCurrentMotor1.start();
+                            }
+                            else if(data == "stop")
+                            {
+                                stop_motor_1();
+                            }
+                            else if(data == "close")
+                            {
+                                close_motor_1();
+                                checkCurrentMotor1.start();
+                            }
+                        }
+                        else if(name == "motor2")
+                        {
+                            if(data == "open")
+                            {
+                                open_motor_2();
+                                checkCurrentMotor2.start();
+                            }
+                            else if(data == "stop")
+                            {
+                                stop_motor_2();
+                            }
+                            else if(data == "close")
+                            {
+                                close_motor_2();
+                                checkCurrentMotor2.start();
+                            }
+                        }
+                        else if(name == "motor3")
+                        {
+                            if(data == "open")
+                            {
+                                open_motor_3();
+                                checkCurrentMotor3.start();
+                            }
+                            else if(data == "stop")
+                            {
+                                stop_motor_3();
+                            }
+                            else if(data == "close")
+                            {
+                                close_motor_3();
+                                checkCurrentMotor3.start();
+                            }
+                        }
+                        else if(name == "motor4")
+                        {
+                            if(data == "open")
+                            {
+                                open_motor_4();
+                                checkCurrentMotor4.start();
+                            }
+                            else if(data == "stop")
+                            {
+                                stop_motor_4();
+                            }
+                            else if(data == "close")
+                            {
+                                close_motor_4();
+                                checkCurrentMotor4.start();
+                            }
+                        }
+                        else if(name == "motor5")
+                        {
+                            if(data == "open")
+                            {
+                                open_motor_5();
+                                checkCurrentMotor5.start();
+                            }
+                            else if(data == "stop")
+                            {
+                                stop_motor_5();
+                            }
+                            else if(data == "close")
+                            {
+                                close_motor_5();
+                                checkCurrentMotor5.start();
+                            }
+                        }
+                        else if(name == "motor6")
+                        {
+                            if(data == "open")
+                            {
+                                open_motor_6();
+                                checkCurrentMotor6.start();
+                            }
+                            else if(data == "stop")
+                            {
+                                stop_motor_6();
+                            }
+                            else if(data == "close")
+                            {
+                                close_motor_6();
+                                checkCurrentMotor6.start();
+                            }
+                        }
+                    }
+                    else if(type == "save_data")
+                    {
+                        String max_current = rootData["max_current"];
+                        String time_return = rootData["time_return"];
+                        if(name == "0")
+                        {
+                            if(max_current != "")
+                            {
+                                setup_motor.define_max_current[MOTOR_1] = max_current.toInt()/VALUE_CONVERT;
+                                // ECHOLN(setup_motor.define_max_current[MOTOR_1]);
+                                EEPROM.write(EEPROM_MAX_CURRENT_1,setup_motor.define_max_current[MOTOR_1]);
+                            }
+                            if(time_return != "")
+                            {
+                                setup_motor.define_time_return[MOTOR_1] = time_return.toInt()/VALUE_CONVERT;
+                                // ECHOLN(setup_motor.define_time_return[MOTOR_1]);
+                                EEPROM.write(EEPROM_TIME_RETURN_1,setup_motor.define_time_return[MOTOR_1]);
+                            }
+                        }
+                        else if(name == "1")
+                        {
+                            if(max_current != "")
+                            {
+                                setup_motor.define_max_current[MOTOR_2] = max_current.toInt()/VALUE_CONVERT;
+                                EEPROM.write(EEPROM_MAX_CURRENT_2,setup_motor.define_max_current[MOTOR_2]);
+                            }
+                            if(time_return != "")
+                            {
+                                setup_motor.define_time_return[MOTOR_2] = time_return.toInt()/VALUE_CONVERT;
+                                EEPROM.write(EEPROM_TIME_RETURN_2,setup_motor.define_time_return[MOTOR_2]);
+                            }
+                        }
+                        else if(name == "2")
+                        {
+                            if(max_current != "")
+                            {
+                                setup_motor.define_max_current[MOTOR_3] = max_current.toInt()/VALUE_CONVERT;
+                                EEPROM.write(EEPROM_MAX_CURRENT_3,setup_motor.define_max_current[MOTOR_3]);
+                            }
+                            if(time_return != "")
+                            {
+                                setup_motor.define_time_return[MOTOR_3] = time_return.toInt()/VALUE_CONVERT;
+                                EEPROM.write(EEPROM_TIME_RETURN_3,setup_motor.define_time_return[MOTOR_3]);
+                            }
+                        }
+                        else if(name == "3")
+                        {
+                            if(max_current != "")
+                            {
+                                setup_motor.define_max_current[MOTOR_4] = max_current.toInt()/VALUE_CONVERT;
+                                EEPROM.write(EEPROM_MAX_CURRENT_4,setup_motor.define_max_current[MOTOR_4]);
+                            }
+                            if(time_return != "")
+                            {
+                                setup_motor.define_time_return[MOTOR_4] = time_return.toInt()/VALUE_CONVERT;
+                                EEPROM.write(EEPROM_TIME_RETURN_4,setup_motor.define_time_return[MOTOR_4]);
+                            }
+                        }
+                        else if(name == "4")
+                        {
+                            if(max_current != "")
+                            {
+                                setup_motor.define_max_current[MOTOR_5] = max_current.toInt()/VALUE_CONVERT;
+                                EEPROM.write(EEPROM_MAX_CURRENT_5,setup_motor.define_max_current[MOTOR_5]);
+                            }
+                            if(time_return != "")
+                            {
+                                setup_motor.define_time_return[MOTOR_5] = time_return.toInt()/VALUE_CONVERT;
+                                EEPROM.write(EEPROM_TIME_RETURN_5,setup_motor.define_time_return[MOTOR_5]);
+                            }
+                        }
+                        else if(name == "5")
+                        {
+                            if(max_current != "")
+                            {
+                                setup_motor.define_max_current[MOTOR_6] = max_current.toInt()/VALUE_CONVERT;
+                                EEPROM.write(EEPROM_MAX_CURRENT_6,setup_motor.define_max_current[MOTOR_6]);
+                            }
+                            if(time_return != "")
+                            {
+                                setup_motor.define_time_return[MOTOR_6] = time_return.toInt()/VALUE_CONVERT;
+                                EEPROM.write(EEPROM_TIME_RETURN_6,setup_motor.define_time_return[MOTOR_6]);
+                            }
+                        }
+                        EEPROM.commit();
+                    }
+                }
+            }
 
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 void check_current_motor_1()
 {
+    static int count_check_1 = 0;
+    uint8_t status_forward;
+    status_forward = statusCurrentMotor[MOTOR_1];
+    count_check_1++;
+    if(count_check_1 >= 3)
+    {
+        if(int(setup_motor.value_current[MOTOR_1]) > setup_motor.define_max_current[MOTOR_1])
+        {   
+            count_check_1 = 0;
+            ECHOLN("Qua Tai Motor 1");
+            stop_motor_1();
+            if(is_done_step())
+            {
+                run_motor.mode_run_open_step++;
+                run_motor.beginChangeStep = true;
+            }
 
+            if(setup_motor.define_time_return[MOTOR_1] != 0 && setup_motor.define_time_return[MOTOR_1] != 255)
+            {
+                if(status_forward == MOTOR_OPEN)
+                {
+                    close_motor_1();
+                    motorRunReturn1.start();
+                }
+                else if(status_forward == MOTOR_CLOSE)
+                {
+                    open_motor_1();
+                    motorRunReturn1.start();
+                }
+            }
+            checkCurrentMotor1.stop();
+        }
+    }
+    
 }
 
 void check_current_motor_2()
@@ -166,25 +498,65 @@ void check_current_motor_6()
 
 }
 
+void returStopMotor1()
+{
+    static uint8_t return_stop_motor_1 = 0;
+    return_stop_motor_1++;
+    if(return_stop_motor_1 == setup_motor.define_time_return[MOTOR_1])
+    {
+        return_stop_motor_1 = 0;
+        stop_motor_1();
+        motorRunReturn1.stop();
+    }
+}
+void returStopMotor2()
+{
+    
+}
+void returStopMotor3()
+{
+    
+}
+void returStopMotor4()
+{
+    
+}
+void returStopMotor5()
+{
+    
+}
+void returStopMotor6()
+{
+    
+}
 
+void tickerUpdate()
+{
+    sendDatatoAppTicker.update();
+    checkCurrentMotor1.update();
+    checkCurrentMotor2.update();
+    checkCurrentMotor3.update();
+    checkCurrentMotor4.update();
+    checkCurrentMotor5.update();
+    checkCurrentMotor6.update();
+    motorRunReturn1.update();
+    motorRunReturn2.update();
+    motorRunReturn3.update();
+    motorRunReturn4.update();
+    motorRunReturn5.update();
+    motorRunReturn6.update();
+}
 
 void setup()
 {
+    WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);  //Brownout detector was triggered
     Serial.begin (SERIAL_BAUDRATE);  
     Wire.begin (SDA_PIN, SCL_PIN);   // sda= GPIO_21 /scl= GPIO_22
-    
+    EEPROM.begin(MAX_SIZE_EEPROM_BUFFER);
     setupPinMode();
-
     scannerI2cAddress();
-    if(Ina219_info.count > 0)
-    {
-        for(uint8_t i = 0; i < Ina219_info.count; i++)
-        {
-            ina219[i] = Adafruit_INA219(Ina219_info.address_ina[i]);
-            ina219[i].begin();
-            delay(10);
-        }
-    }
+    setupI2c();
+    loadDataBegin();
 
     SerialBT.flush();
     SerialBT.end(); 
@@ -198,50 +570,167 @@ void setup()
 
 }
 
-bool test = false;
-float current_mA_test = 0;
 void loop()
 {
-    if(digitalRead(BTN_IN_M1) && test)
-    {   
-        delay(200);
-        Serial.println("up");
-        test = false;
-        digitalWrite(LATCH_PIN_MOTOR, LOW);
-        shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 128);   //1000 0000
-        digitalWrite(LATCH_PIN_MOTOR, HIGH);    
-    }
-    else if(!digitalRead(BTN_IN_M1) && !test)
-    {
-        delay(200);
-        Serial.println("down");
-        test = true;
-        digitalWrite(LATCH_PIN_MOTOR, LOW);
-        shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 64);    //0100 0000
-        digitalWrite(LATCH_PIN_MOTOR, HIGH);
-    }
+    
+    // if(digitalRead(BTN_IN_M1) && test)
+    // {   
+    //     delay(200);
+    //     Serial.println("up");
+    //     test = false;
+    //     digitalWrite(LATCH_PIN_MOTOR, LOW);
+    //     shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 128);   //1000 0000
+    //     digitalWrite(LATCH_PIN_MOTOR, HIGH);    
+    // }
+    // else if(!digitalRead(BTN_IN_M1) && !test)
+    // {
+    //     delay(200);
+    //     Serial.println("down");
+    //     test = true;
+    //     digitalWrite(LATCH_PIN_MOTOR, LOW);
+    //     shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 64);    //0100 0000
+    //     digitalWrite(LATCH_PIN_MOTOR, HIGH);
+    // }
     // printDataI2c();
-    // delay(500);
-    // current_mA_test = ina219[0].getCurrent_mA();
-    // Serial.printf("Current %f", current_mA_test);
-    // Serial.println("");
-    // delay(500);
+
     // if(SerialBT.hasClient())
     // {
-    //     Serial.printf("BusVoltage 1: %d  --  getCurrent_mA 1: %d", int(ina219[MOTOR_1].getBusVoltage_V()), int(ina219[MOTOR_1].getCurrent_mA()));
-    //     Serial.printf("BusVoltage 2: %d  --  getCurrent_mA 2: %d", int(ina219[MOTOR_2].getBusVoltage_V()), int(ina219[MOTOR_2].getCurrent_mA()));
-    //     Serial.printf("BusVoltage 3: %d  --  getCurrent_mA 3: %d", int(ina219[MOTOR_3].getBusVoltage_V()), int(ina219[MOTOR_3].getCurrent_mA()));
-    //     Serial.printf("BusVoltage 4: %d  --  getCurrent_mA 4: %d", int(ina219[MOTOR_4].getBusVoltage_V()), int(ina219[MOTOR_4].getCurrent_mA()));
-    //     Serial.printf("BusVoltage 5: %d  --  getCurrent_mA 5: %d", int(ina219[MOTOR_5].getBusVoltage_V()), int(ina219[MOTOR_5].getCurrent_mA()));
-    //     Serial.printf("BusVoltage 6: %d  --  getCurrent_mA 6: %d", int(ina219[MOTOR_6].getBusVoltage_V()), int(ina219[MOTOR_6].getCurrent_mA()));
     //     sendDatatoApp();
     // }
-    // sendDatatoApp();
     // delay(500);
 
+    readValueIna219();
+    sendDatatoAppTicker.update();
+
+    if(!run_motor.isModeConfig)
+    {
+        if(digitalRead(BTN_MODE_RUN))
+        {
+            run_motor.mode_run_close_step = CLOSE_STEP_1;
+            switch (run_motor.mode_run_open_step)
+            {
+            case OPEN_STEP_1:
+                if(run_motor.beginChangeStep)
+                {
+                    ECHOLN("START MODE RUN OPEN STEP 1");
+                    run_motor.beginChangeStep = false;
+                    open_motor_1();
+                    checkCurrentMotor1.start();
+                    open_motor_2();
+                    checkCurrentMotor2.start();
+                    open_motor_3();
+                    checkCurrentMotor3.start();
+                    stop_motor_4();
+                    stop_motor_5();
+                    stop_motor_6();
+                }
+                break;
+            case OPEN_STEP_2:
+                if(run_motor.beginChangeStep)
+                {
+                    ECHOLN("START MODE RUN OPEN STEP 2");
+                    run_motor.beginChangeStep = false;
+                    stop_motor_1();
+                    stop_motor_2();
+                    stop_motor_3();
+                    open_motor_4();
+                    checkCurrentMotor4.start();
+                    open_motor_5();
+                    checkCurrentMotor5.start();
+                    open_motor_6();
+                    checkCurrentMotor6.start();
+                }
+                break;
+            case OPEN_STEP_3:
+                if(run_motor.beginChangeStep)
+                {
+                    ECHOLN("START MODE RUN OPEN STEP 2");
+                    run_motor.beginChangeStep = false;
+                    close_motor_1();
+                    checkCurrentMotor1.start();
+                    close_motor_2();
+                    checkCurrentMotor2.start();
+                    stop_motor_3();
+                    stop_motor_4();
+                    stop_motor_5();
+                    stop_motor_6();
+                }
+                break;
+            case DONE_MODE_OPEN:
+                ECHOLN("DONE RUN OPEN MODE");
+                run_motor.mode_run_open_step++;
+                break;
+            default:
+                break;
+            }
+        }
+        //-----------------------------------------------
+        else
+        {
+            run_motor.mode_run_open_step = OPEN_STEP_1;
+            switch (run_motor.mode_run_close_step)
+            {
+            case CLOSE_STEP_1:
+                if(run_motor.beginChangeStep)
+                {
+                    ECHOLN("START MODE RUN CLOSE STEP 1");
+                    run_motor.beginChangeStep = false;
+                    open_motor_1();
+                    checkCurrentMotor1.start();
+                    open_motor_2();
+                    checkCurrentMotor2.start();
+                    stop_motor_3();
+                    stop_motor_4();
+                    stop_motor_5();
+                    stop_motor_6();
+                }
+                break;
+            case CLOSE_STEP_2:
+                if(run_motor.beginChangeStep)
+                {
+                    ECHOLN("START MODE RUN CLOSE STEP 2");
+                    run_motor.beginChangeStep = false;
+                    stop_motor_1();
+                    stop_motor_2();
+                    stop_motor_3();
+                    close_motor_4();
+                    checkCurrentMotor4.start();
+                    close_motor_5();
+                    checkCurrentMotor5.start();
+                    close_motor_6();
+                    checkCurrentMotor6.start();
+                }
+                break;
+            case CLOSE_STEP_3:
+                if(run_motor.beginChangeStep)
+                {
+                    ECHOLN("START MODE RUN CLOSE STEP 2");
+                    run_motor.beginChangeStep = false;
+                    close_motor_1();
+                    checkCurrentMotor1.start();
+                    close_motor_2();
+                    checkCurrentMotor2.start();
+                    close_motor_3();
+                    checkCurrentMotor3.start();
+                    stop_motor_4();
+                    stop_motor_5();
+                    stop_motor_6();
+                }
+                break;
+            case DONE_MODE_CLOSE:
+                ECHOLN("DONE RUN CLOSE MODE");
+                run_motor.mode_run_close_step++;
+                break;
+            default:
+                break;
+            }
+        }
+        
 
 
+    }
 
+    
 
 
 }

@@ -44,6 +44,25 @@
 #define MAX_ALL_MOTOR           6
 #define MAX_NUMBER_MOTOR        6
 // #define MAX_ALL_MOTOR           12
+#define MAX_RESPONSE_LENGTH     512
+
+#define MAX_SIZE_EEPROM_BUFFER  512
+#define EEPROM_MAX_CURRENT_1    1
+#define EEPROM_MAX_CURRENT_2    2
+#define EEPROM_MAX_CURRENT_3    3
+#define EEPROM_MAX_CURRENT_4    4
+#define EEPROM_MAX_CURRENT_5    5
+#define EEPROM_MAX_CURRENT_6    6
+#define EEPROM_TIME_RETURN_1    7
+#define EEPROM_TIME_RETURN_2    8
+#define EEPROM_TIME_RETURN_3    9
+#define EEPROM_TIME_RETURN_4    10
+#define EEPROM_TIME_RETURN_5    11
+#define EEPROM_TIME_RETURN_6    12
+
+
+#define VALUE_CONVERT           10
+
 
 enum
 {
@@ -63,5 +82,22 @@ enum
     MOTOR_OPEN,
     MOTOR_CLOSE
 };
+
+enum
+{
+    OPEN_STEP_1 = 1,
+    OPEN_STEP_2,
+    OPEN_STEP_3,
+    DONE_MODE_OPEN
+};
+
+enum
+{
+    CLOSE_STEP_1 = 1,
+    CLOSE_STEP_2,
+    CLOSE_STEP_3,
+    DONE_MODE_CLOSE
+};
+
 
 #endif
