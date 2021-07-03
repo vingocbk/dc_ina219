@@ -38,49 +38,71 @@ struct _stepMode
 
 struct motor
 {
-    byte high_stop_motor_1;
-    byte high_open_motor_1;
-    byte high_close_motor_1;
-    byte low_stop_motor_1;
-    byte low_open_motor_1;
-    byte low_close_motor_1;
+    // uint116_t 
+    unsigned int on_motor_1;
+    unsigned int stop_motor_1;
+    unsigned int off_motor_1;
 
-    byte high_stop_motor_2;
-    byte high_open_motor_2;
-    byte high_close_motor_2;
-    byte low_stop_motor_2;
-    byte low_open_motor_2;
-    byte low_close_motor_2;
+    unsigned int on_motor_2;
+    unsigned int stop_motor_2;
+    unsigned int off_motor_2;
 
-    byte high_stop_motor_3;
-    byte high_open_motor_3;
-    byte high_close_motor_3;
-    byte low_stop_motor_3;
-    byte low_open_motor_3;
-    byte low_close_motor_3;
+    unsigned int on_motor_3;
+    unsigned int stop_motor_3;
+    unsigned int off_motor_3;
 
-    byte high_stop_motor_4;
-    byte high_open_motor_4;
-    byte high_close_motor_4;
-    byte low_stop_motor_4;
-    byte low_open_motor_4;
-    byte low_close_motor_4;
+    unsigned int on_motor_4;
+    unsigned int stop_motor_4;
+    unsigned int off_motor_4;
 
-    byte high_stop_motor_5;
-    byte high_open_motor_5;
-    byte high_close_motor_5;
-    byte low_stop_motor_5;
-    byte low_open_motor_5;
-    byte low_close_motor_5;
+    unsigned int on_motor_5;
+    unsigned int stop_motor_5;
+    unsigned int off_motor_5;
 
-    byte high_stop_motor_6;
-    byte high_open_motor_6;
-    byte high_close_motor_6;
-    byte low_stop_motor_6;
-    byte low_open_motor_6;
-    byte low_close_motor_6;
+    unsigned int on_motor_6;
+    unsigned int stop_motor_6;
+    unsigned int off_motor_6;
 
-    byte data_send_motor;
+    unsigned int convert_data_motor;
+    char *data_send_motor;
+    
+
+    //-------------------------------
+    unsigned int on_led_r;
+    unsigned int off_led_r;
+
+    unsigned int on_led_g;
+    unsigned int off_led_g;
+
+    unsigned int on_led_b;
+    unsigned int off_led_b;
+
+    unsigned int on_led_1;
+    unsigned int off_led_1;
+
+    unsigned int on_led_2;
+    unsigned int off_led_2;
+
+    unsigned int on_led_3;
+    unsigned int off_led_3;
+
+    unsigned int on_led_4;
+    unsigned int off_led_4;
+    
+    unsigned int on_led_5;
+    unsigned int off_led_5;
+
+    unsigned int on_led_6;
+    unsigned int off_led_6;
+
+    unsigned int on_led_7;
+    unsigned int off_led_7;
+    
+    unsigned int on_led_8;
+    unsigned int off_led_8;
+
+    unsigned int convert_data_led;
+    char *data_send_led;
 };
 
 void initMotor();
@@ -105,5 +127,19 @@ void close_motor_3();
 void close_motor_4();
 void close_motor_5();
 void close_motor_6();
+
+void on_led_motor_1();
+void on_led_motor_2();
+void on_led_motor_3();
+void on_led_motor_4();
+void on_led_motor_5();
+void on_led_motor_6();
+
+void off_led_motor_1();
+void off_led_motor_2();
+void off_led_motor_3();
+void off_led_motor_4();
+void off_led_motor_5();
+void off_led_motor_6();
 
 #endif

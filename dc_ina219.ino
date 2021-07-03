@@ -570,34 +570,144 @@ void setup()
 
 }
 
+
+bool test[MAX_NUMBER_MOTOR] = {false,false,false,false,false,false};
 void loop()
 {
     
-    // if(digitalRead(BTN_IN_M1) && test)
-    // {   
-    //     delay(200);
-    //     Serial.println("up");
-    //     test = false;
-    //     digitalWrite(LATCH_PIN_MOTOR, LOW);
-    //     shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 128);   //1000 0000
-    //     digitalWrite(LATCH_PIN_MOTOR, HIGH);    
-    // }
-    // else if(!digitalRead(BTN_IN_M1) && !test)
-    // {
-    //     delay(200);
-    //     Serial.println("down");
-    //     test = true;
-    //     digitalWrite(LATCH_PIN_MOTOR, LOW);
-    //     shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 64);    //0100 0000
-    //     digitalWrite(LATCH_PIN_MOTOR, HIGH);
-    // }
-    // printDataI2c();
+    if(digitalRead(BTN_IN_M1) && test[MOTOR_1])
+    {   
+        delay(200);
+        Serial.println("up");
+        test[MOTOR_1] = false;
+        // digitalWrite(LATCH_PIN_MOTOR, LOW);
+        // shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 128);   //1000 0000
+        // digitalWrite(LATCH_PIN_MOTOR, HIGH);
+        open_motor_1(); 
+        on_led_motor_1();
+    }
+    else if(!digitalRead(BTN_IN_M1) && !test[MOTOR_1])
+    {
+        delay(100);
+        Serial.println("down");
+        test[MOTOR_1] = true;
+        // digitalWrite(LATCH_PIN_MOTOR, LOW);
+        // shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 64);    //0100 0000
+        // digitalWrite(LATCH_PIN_MOTOR, HIGH);
+        close_motor_1();
+        off_led_motor_1();
+    }
 
-    // if(SerialBT.hasClient())
-    // {
-    //     sendDatatoApp();
-    // }
-    // delay(500);
+    if(digitalRead(BTN_IN_M2) && test[MOTOR_2])
+    {   
+        delay(200);
+        Serial.println("up");
+        test[MOTOR_2] = false;
+        // digitalWrite(LATCH_PIN_MOTOR, LOW);
+        // shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 228);   //2000 0000
+        // digitalWrite(LATCH_PIN_MOTOR, HIGH);
+        open_motor_2();
+        on_led_motor_2(); 
+    }
+    else if(!digitalRead(BTN_IN_M2) && !test[MOTOR_2])
+    {
+        delay(200);
+        Serial.println("down");
+        test[MOTOR_2] = true;
+        // digitalWrite(LATCH_PIN_MOTOR, LOW);
+        // shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 62);    //0200 0000
+        // digitalWrite(LATCH_PIN_MOTOR, HIGH);
+        close_motor_2();
+        off_led_motor_2();
+    }
+    if(digitalRead(BTN_IN_M3) && test[MOTOR_3])
+    {   
+        delay(200);
+        Serial.println("up");
+        test[MOTOR_3] = false;
+        // digitalWrite(LATCH_PIN_MOTOR, LOW);
+        // shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 328);   //3000 0000
+        // digitalWrite(LATCH_PIN_MOTOR, HIGH);
+        open_motor_3(); 
+        on_led_motor_3();
+    }
+    else if(!digitalRead(BTN_IN_M3) && !test[MOTOR_3])
+    {
+        delay(200);
+        Serial.println("down");
+        test[MOTOR_3] = true;
+        // digitalWrite(LATCH_PIN_MOTOR, LOW);
+        // shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 64);    //0300 0000
+        // digitalWrite(LATCH_PIN_MOTOR, HIGH);
+        close_motor_3();
+        off_led_motor_3();
+    }
+    if(digitalRead(BTN_IN_M4) && test[MOTOR_4])
+    {   
+        delay(200);
+        Serial.println("up");
+        test[MOTOR_4] = false;
+        // digitalWrite(LATCH_PIN_MOTOR, LOW);
+        // shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 428);   //4000 0000
+        // digitalWrite(LATCH_PIN_MOTOR, HIGH);
+        open_motor_4(); 
+        on_led_motor_4();
+    }
+    else if(!digitalRead(BTN_IN_M4) && !test[MOTOR_4])
+    {
+        delay(200);
+        Serial.println("down");
+        test[MOTOR_4] = true;
+        // digitalWrite(LATCH_PIN_MOTOR, LOW);
+        // shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 64);    //0400 0000
+        // digitalWrite(LATCH_PIN_MOTOR, HIGH);
+        close_motor_4();
+        off_led_motor_4();
+    }
+    if(digitalRead(BTN_IN_M5) && test[MOTOR_5])
+    {   
+        delay(200);
+        Serial.println("up");
+        test[MOTOR_5] = false;
+        // digitalWrite(LATCH_PIN_MOTOR, LOW);
+        // shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 528);   //5000 0000
+        // digitalWrite(LATCH_PIN_MOTOR, HIGH);
+        open_motor_5(); 
+        on_led_motor_5();
+    }
+    else if(!digitalRead(BTN_IN_M5) && !test[MOTOR_5])
+    {
+        delay(200);
+        Serial.println("down");
+        test[MOTOR_5] = true;
+        // digitalWrite(LATCH_PIN_MOTOR, LOW);
+        // shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 64);    //0500 0000
+        // digitalWrite(LATCH_PIN_MOTOR, HIGH);
+        close_motor_5();
+        off_led_motor_5();
+    }
+    if(digitalRead(BTN_IN_M6) && test[MOTOR_6])
+    {   
+        delay(200);
+        Serial.println("up");
+        test[MOTOR_6] = false;
+        // digitalWrite(LATCH_PIN_MOTOR, LOW);
+        // shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 628);   //6000 0000
+        // digitalWrite(LATCH_PIN_MOTOR, HIGH);
+        open_motor_6(); 
+        on_led_motor_6();
+    }
+    else if(!digitalRead(BTN_IN_M6) && !test[MOTOR_6])
+    {
+        delay(200);
+        Serial.println("down");
+        test[MOTOR_6] = true;
+        // digitalWrite(LATCH_PIN_MOTOR, LOW);
+        // shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, 64);    //0600 0000
+        // digitalWrite(LATCH_PIN_MOTOR, HIGH);
+        close_motor_6();
+        off_led_motor_6();
+    }
 
     readValueIna219();
     sendDatatoAppTicker.update();
