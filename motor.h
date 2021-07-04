@@ -15,6 +15,23 @@ enum
     RUN_CLOSE
 };
 
+
+// extern int LED_R;
+// extern int LED_G;   
+// extern int LED_B;
+// extern int LED_1;
+// extern int LED_2;
+// extern int LED_3;
+// extern int LED_4;
+// extern int LED_5;
+// extern int LED_6;
+// extern int LED_7;
+// extern int LED_8;
+// extern int LED_9;
+// extern int LED_10; 
+// extern int LED_11;
+// extern int LED_12;
+
 struct _controlStep
 {
     /* data */
@@ -39,35 +56,41 @@ struct _stepMode
 struct motor
 {
     // uint116_t 
-    unsigned int on_motor_1;
+    unsigned int open_motor[MAX_NUMBER_MOTOR];
+    unsigned int stop_motor[MAX_NUMBER_MOTOR];
+    unsigned int close_motor[MAX_NUMBER_MOTOR];
+
+    unsigned int open_motor_1;
     unsigned int stop_motor_1;
-    unsigned int off_motor_1;
+    unsigned int close_motor_1;
 
-    unsigned int on_motor_2;
+    unsigned int open_motor_2;
     unsigned int stop_motor_2;
-    unsigned int off_motor_2;
+    unsigned int close_motor_2;
 
-    unsigned int on_motor_3;
+    unsigned int open_motor_3;
     unsigned int stop_motor_3;
-    unsigned int off_motor_3;
+    unsigned int close_motor_3;
 
-    unsigned int on_motor_4;
+    unsigned int open_motor_4;
     unsigned int stop_motor_4;
-    unsigned int off_motor_4;
+    unsigned int close_motor_4;
 
-    unsigned int on_motor_5;
+    unsigned int open_motor_5;
     unsigned int stop_motor_5;
-    unsigned int off_motor_5;
+    unsigned int close_motor_5;
 
-    unsigned int on_motor_6;
+    unsigned int open_motor_6;
     unsigned int stop_motor_6;
-    unsigned int off_motor_6;
+    unsigned int close_motor_6;
 
     unsigned int convert_data_motor;
     char *data_send_motor;
     
 
     //-------------------------------
+    unsigned int on_led[MAX_NUMBER_LED];
+    unsigned int off_led[MAX_NUMBER_LED];
     unsigned int on_led_r;
     unsigned int off_led_r;
 
@@ -107,39 +130,14 @@ struct motor
 
 void initMotor();
 bool is_done_step();
-void stop_motor_1();
-void stop_motor_2();
-void stop_motor_3();
-void stop_motor_4();
-void stop_motor_5();
-void stop_motor_6();
+void stop_motor(int number);
 
-void open_motor_1();
-void open_motor_2();
-void open_motor_3();
-void open_motor_4();
-void open_motor_5();
-void open_motor_6();
+void open_motor(int number);
 
-void close_motor_1();
-void close_motor_2();
-void close_motor_3();
-void close_motor_4();
-void close_motor_5();
-void close_motor_6();
+void close_motor(int number);
 
-void on_led_motor_1();
-void on_led_motor_2();
-void on_led_motor_3();
-void on_led_motor_4();
-void on_led_motor_5();
-void on_led_motor_6();
+void on_led(int number);
 
-void off_led_motor_1();
-void off_led_motor_2();
-void off_led_motor_3();
-void off_led_motor_4();
-void off_led_motor_5();
-void off_led_motor_6();
+void off_led(int number);
 
 #endif

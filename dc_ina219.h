@@ -62,6 +62,7 @@ void returStopMotor3();
 void returStopMotor4();
 void returStopMotor5();
 void returStopMotor6();
+void checkButtonControl();
 void tickerUpdate();
 
 Ticker checkCurrentMotor1(check_current_motor_1, 300);   //every 300ms

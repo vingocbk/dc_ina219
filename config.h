@@ -44,6 +44,7 @@
 #define MAX_ALL_MOTOR           6
 #define MAX_NUMBER_MOTOR        6
 // #define MAX_ALL_MOTOR           12
+#define MAX_NUMBER_LED          16
 #define MAX_RESPONSE_LENGTH     512
 
 #define MAX_SIZE_EEPROM_BUFFER  512
@@ -75,6 +76,41 @@ enum
 };
 
 
+// #define 
+enum
+{
+    LED_R = 0,
+    LED_G,
+    LED_B,
+    LED_1,
+    LED_2,
+    LED_3,
+    LED_4,
+    LED_5,
+    LED_6,
+    LED_7,
+    LED_8,
+    LED_9,
+    LED_10,
+    LED_11,
+    LED_12,
+};
+
+// int LED_R      = 0;
+// int LED_G      = 1;   
+// int LED_B      = 2;
+// int LED_1      = 3;
+// int LED_2      = 4;
+// int LED_3      = 5;
+// int LED_4      = 6;
+// int LED_5      = 7;
+// int LED_6      = 8;
+// int LED_7      = 9;
+// int LED_8      = 10;
+// int LED_9      = 11;
+// int LED_10     = 12; 
+// int LED_11     = 13;
+// int LED_12     = 14;
 
 enum
 {
