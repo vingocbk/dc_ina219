@@ -7,6 +7,7 @@
 
 extern bool motor_is_stop[MAX_NUMBER_MOTOR];
 extern uint8_t statusCurrentMotor[MAX_NUMBER_MOTOR];
+extern bool start_check_motor_stop[MAX_NUMBER_MOTOR];
 //----mode run for each motor in each step
 enum
 {

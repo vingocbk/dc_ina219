@@ -64,6 +64,7 @@
 
 #define VALUE_CONVERT           10
 
+#define MIN_CURRENT_MOTOR       50          //mA
 
 enum
 {

@@ -10,22 +10,22 @@ Adafruit_INA219 ina219[MAX_NUMBER_MOTOR];
 void readValueIna219()
 {
     static uint32_t time_read_value = 0;
-    if(millis() >= time_read_value + 500)
+    if(millis() >= time_read_value + 100)
     {
         time_read_value = millis();
-        setup_motor.value_current[MOTOR_1] = ina219[MOTOR_1].getCurrent_mA();
-        setup_motor.value_current[MOTOR_2] = ina219[MOTOR_2].getCurrent_mA();
-        setup_motor.value_current[MOTOR_3] = ina219[MOTOR_3].getCurrent_mA();
-        setup_motor.value_current[MOTOR_4] = ina219[MOTOR_4].getCurrent_mA();
-        setup_motor.value_current[MOTOR_5] = ina219[MOTOR_5].getCurrent_mA();
-        setup_motor.value_current[MOTOR_6] = ina219[MOTOR_6].getCurrent_mA();
+        setup_motor.value_current[MOTOR_1] = abs(ina219[MOTOR_1].getCurrent_mA());
+        setup_motor.value_current[MOTOR_2] = abs(ina219[MOTOR_2].getCurrent_mA());
+        setup_motor.value_current[MOTOR_3] = abs(ina219[MOTOR_3].getCurrent_mA());
+        setup_motor.value_current[MOTOR_4] = abs(ina219[MOTOR_4].getCurrent_mA());
+        setup_motor.value_current[MOTOR_5] = abs(ina219[MOTOR_5].getCurrent_mA());
+        setup_motor.value_current[MOTOR_6] = abs(ina219[MOTOR_6].getCurrent_mA());
 
-        setup_motor.value_bus_voltage[MOTOR_1] = ina219[MOTOR_1].getBusVoltage_V();
-        setup_motor.value_bus_voltage[MOTOR_2] = ina219[MOTOR_2].getBusVoltage_V();
-        setup_motor.value_bus_voltage[MOTOR_3] = ina219[MOTOR_3].getBusVoltage_V();
-        setup_motor.value_bus_voltage[MOTOR_4] = ina219[MOTOR_4].getBusVoltage_V();
-        setup_motor.value_bus_voltage[MOTOR_5] = ina219[MOTOR_5].getBusVoltage_V();
-        setup_motor.value_bus_voltage[MOTOR_6] = ina219[MOTOR_6].getBusVoltage_V();
+        setup_motor.value_bus_voltage[MOTOR_1] = abs(ina219[MOTOR_1].getBusVoltage_V());
+        setup_motor.value_bus_voltage[MOTOR_2] = abs(ina219[MOTOR_2].getBusVoltage_V());
+        setup_motor.value_bus_voltage[MOTOR_3] = abs(ina219[MOTOR_3].getBusVoltage_V());
+        setup_motor.value_bus_voltage[MOTOR_4] = abs(ina219[MOTOR_4].getBusVoltage_V());
+        setup_motor.value_bus_voltage[MOTOR_5] = abs(ina219[MOTOR_5].getBusVoltage_V());
+        setup_motor.value_bus_voltage[MOTOR_6] = abs(ina219[MOTOR_6].getBusVoltage_V());
 
     }
 }
@@ -441,9 +441,10 @@ void check_current_motor_1()
     uint8_t status_forward;
     status_forward = statusCurrentMotor[MOTOR_1];
     count_check_1++;
-    if(count_check_1 >= 3)
+    if(count_check_1 >= 5)
     {
-        if(int(setup_motor.value_current[MOTOR_1]) > setup_motor.define_max_current[MOTOR_1])
+        // if(int(setup_motor.value_current[MOTOR_1]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_1]) > (setup_motor.define_max_current[MOTOR_1]*VALUE_CONVERT))
+        if(int(setup_motor.value_current[MOTOR_1]) > (setup_motor.define_max_current[MOTOR_1]*VALUE_CONVERT))
         {   
             count_check_1 = 0;
             ECHOLN("Qua Tai Motor 1");
@@ -553,8 +554,12 @@ void checkButtonControl()
         }
         else if(count[MOTOR_1] == 3)
         {
-            count[MOTOR_1] = 0;
             close_motor(MOTOR_1);
+        }
+        else if(count[MOTOR_1] == 4)
+        {
+            count[MOTOR_1] = 0;
+            stop_motor(MOTOR_1);
         }
     }
 
@@ -575,8 +580,12 @@ void checkButtonControl()
         }
         else if(count[MOTOR_2] == 3)
         {
-            count[MOTOR_2] = 0;
             close_motor(MOTOR_2);
+        }
+        else if(count[MOTOR_2] == 4)
+        {
+            count[MOTOR_2] = 0;
+            stop_motor(MOTOR_2);
         }
     }
 
@@ -597,8 +606,12 @@ void checkButtonControl()
         }
         else if(count[MOTOR_3] == 3)
         {
-            count[MOTOR_3] = 0;
             close_motor(MOTOR_3);
+        }
+        else if(count[MOTOR_3] == 4)
+        {
+            count[MOTOR_3] = 0;
+            stop_motor(MOTOR_3);
         }
     }
 
@@ -619,8 +632,12 @@ void checkButtonControl()
         }
         else if(count[MOTOR_4] == 3)
         {
-            count[MOTOR_4] = 0;
             close_motor(MOTOR_4);
+        }
+        else if(count[MOTOR_4] == 4)
+        {
+            count[MOTOR_4] = 0;
+            stop_motor(MOTOR_4);
         }
     }
 
@@ -641,8 +658,12 @@ void checkButtonControl()
         }
         else if(count[MOTOR_5] == 3)
         {
-            count[MOTOR_5] = 0;
             close_motor(MOTOR_5);
+        }
+        else if(count[MOTOR_5] == 4)
+        {
+            count[MOTOR_5] = 0;
+            stop_motor(MOTOR_5);
         }
     }
 
@@ -663,8 +684,12 @@ void checkButtonControl()
         }
         else if(count[MOTOR_6] == 3)
         {
-            count[MOTOR_6] = 0;
             close_motor(MOTOR_6);
+        }
+        else if(count[MOTOR_6] == 4)
+        {
+            count[MOTOR_6] = 0;
+            stop_motor(MOTOR_6);
         }
     }
     
@@ -687,6 +712,7 @@ void tickerUpdate()
     motorRunReturn4.update();
     motorRunReturn5.update();
     motorRunReturn6.update();
+    sendDatatoAppTicker.update();
 }
 
 void setup()
@@ -709,6 +735,11 @@ void setup()
     }
 	SerialBT.register_callback(callbackBluetooth);
 
+    for(int i = 0; i < MAX_NUMBER_MOTOR; i++)
+    {
+        stop_motor(i);
+    }
+
 
 }
 
@@ -718,7 +749,13 @@ void loop()
 {
     
     readValueIna219();
-    sendDatatoAppTicker.update();
+    tickerUpdate();
+
+    if(start_check_motor_stop[MOTOR_1])
+    {
+        start_check_motor_stop[MOTOR_1] = false;
+        checkCurrentMotor1.start();
+    }
 
     if(!run_motor.isModeConfig)
     {

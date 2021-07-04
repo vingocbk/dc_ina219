@@ -4,22 +4,7 @@
 struct motor Set_Motor;
 bool motor_is_stop[MAX_NUMBER_MOTOR] = {false,false,false,false,false,false};
 uint8_t statusCurrentMotor[MAX_NUMBER_MOTOR] = {MOTOR_STOP,MOTOR_STOP,MOTOR_STOP,MOTOR_STOP,MOTOR_STOP,MOTOR_STOP};
-
-// int LED_R      = 0;
-// int LED_G      = 1; 
-// int LED_B      = 2;
-// int LED_1      = 3;
-// int LED_2      = 4;
-// int LED_3      = 5;
-// int LED_4      = 6;
-// int LED_5      = 7;
-// int LED_6      = 8;
-// int LED_7      = 9;
-// int LED_8      = 10;
-// int LED_9      = 11;
-// int LED_10     = 12;
-// int LED_11     = 13;
-// int LED_12     = 14;
+bool start_check_motor_stop[MAX_NUMBER_MOTOR] = {false,false,false,false,false,false};
 
 bool is_done_step()
 {
@@ -185,6 +170,8 @@ void open_motor(int number)
     shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, *(Set_Motor.data_send_motor + 1));
     digitalWrite(LATCH_PIN_MOTOR, HIGH);
 
+    start_check_motor_stop[number] = true;
+
     switch (number)
     {
     case MOTOR_1:
@@ -228,6 +215,7 @@ void close_motor(int number)
     shiftOut(DATA_PIN_MOTOR, CLOCK_PIN_MOTOR, LSBFIRST, *(Set_Motor.data_send_motor + 1));
     digitalWrite(LATCH_PIN_MOTOR, HIGH);
 
+    start_check_motor_stop[number] = true;
     switch (number)
     {
     case MOTOR_1:
