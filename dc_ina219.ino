@@ -6,6 +6,7 @@ struct SETUPMOTOR setup_motor;
 struct RUNMOTOR run_motor;
 Adafruit_INA219 ina219[MAX_NUMBER_MOTOR];
 
+int count_to_start_check_current[MAX_NUMBER_MOTOR] = {0,0,0,0,0,0};
 
 void readValueIna219()
 {
@@ -241,16 +242,18 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                             if(data == "open")
                             {
                                 open_motor(MOTOR_1);
-                                checkCurrentMotor1.start();
+                                // checkCurrentMotor1.start();
                             }
                             else if(data == "stop")
                             {
                                 stop_motor(MOTOR_1);
+                                checkCurrentMotor1.stop();
+                                count_to_start_check_current[MOTOR_1] = 0;
                             }
                             else if(data == "close")
                             {
                                 close_motor(MOTOR_1);
-                                checkCurrentMotor1.start();
+                                // checkCurrentMotor1.start();
                             }
                         }
                         else if(name == "motor2")
@@ -258,16 +261,18 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                             if(data == "open")
                             {
                                 open_motor(MOTOR_2);
-                                checkCurrentMotor2.start();
+                                // checkCurrentMotor2.start();
                             }
                             else if(data == "stop")
                             {
                                 stop_motor(MOTOR_2);
+                                checkCurrentMotor2.stop();
+                                count_to_start_check_current[MOTOR_2] = 0;
                             }
                             else if(data == "close")
                             {
                                 close_motor(MOTOR_2);
-                                checkCurrentMotor2.start();
+                                // checkCurrentMotor2.start();
                             }
                         }
                         else if(name == "motor3")
@@ -275,16 +280,18 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                             if(data == "open")
                             {
                                 open_motor(MOTOR_3);
-                                checkCurrentMotor3.start();
+                                // checkCurrentMotor3.start();
                             }
                             else if(data == "stop")
                             {
                                 stop_motor(MOTOR_3);
+                                checkCurrentMotor3.stop();
+                                count_to_start_check_current[MOTOR_3] = 0;
                             }
                             else if(data == "close")
                             {
                                 close_motor(MOTOR_3);
-                                checkCurrentMotor3.start();
+                                // checkCurrentMotor3.start();
                             }
                         }
                         else if(name == "motor4")
@@ -292,16 +299,18 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                             if(data == "open")
                             {
                                 open_motor(MOTOR_4);
-                                checkCurrentMotor4.start();
+                                // checkCurrentMotor4.start();
                             }
                             else if(data == "stop")
                             {
                                 stop_motor(MOTOR_4);
+                                checkCurrentMotor4.stop();
+                                count_to_start_check_current[MOTOR_4] = 0;
                             }
                             else if(data == "close")
                             {
                                 close_motor(MOTOR_4);
-                                checkCurrentMotor4.start();
+                                // checkCurrentMotor4.start();
                             }
                         }
                         else if(name == "motor5")
@@ -309,16 +318,18 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                             if(data == "open")
                             {
                                 open_motor(MOTOR_5);
-                                checkCurrentMotor5.start();
+                                // checkCurrentMotor5.start();
                             }
                             else if(data == "stop")
                             {
                                 stop_motor(MOTOR_5);
+                                checkCurrentMotor5.stop();
+                                count_to_start_check_current[MOTOR_5] = 0;
                             }
                             else if(data == "close")
                             {
                                 close_motor(MOTOR_5);
-                                checkCurrentMotor5.start();
+                                // checkCurrentMotor5.start();
                             }
                         }
                         else if(name == "motor6")
@@ -326,16 +337,18 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                             if(data == "open")
                             {
                                 open_motor(MOTOR_6);
-                                checkCurrentMotor6.start();
+                                // checkCurrentMotor6.start();
                             }
                             else if(data == "stop")
                             {
                                 stop_motor(MOTOR_6);
+                                checkCurrentMotor6.stop();
+                                count_to_start_check_current[MOTOR_6] = 0;
                             }
                             else if(data == "close")
                             {
                                 close_motor(MOTOR_6);
-                                checkCurrentMotor6.start();
+                                // checkCurrentMotor6.start();
                             }
                         }
                     }
@@ -437,66 +450,236 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
 
 void check_current_motor_1()
 {
-    static int count_check_1 = 0;
     uint8_t status_forward;
     status_forward = statusCurrentMotor[MOTOR_1];
-    count_check_1++;
-    if(count_check_1 >= 5)
+    count_to_start_check_current[MOTOR_1]++;
+    if(count_to_start_check_current[MOTOR_1] >= 5)
     {
         // if(int(setup_motor.value_current[MOTOR_1]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_1]) > (setup_motor.define_max_current[MOTOR_1]*VALUE_CONVERT))
         if(int(setup_motor.value_current[MOTOR_1]) > (setup_motor.define_max_current[MOTOR_1]*VALUE_CONVERT))
         {   
-            count_check_1 = 0;
+            count_to_start_check_current[MOTOR_1] = 0;
             ECHOLN("Qua Tai Motor 1");
             stop_motor(MOTOR_1);
             if(is_done_step())
             {
                 run_motor.mode_run_open_step++;
+                run_motor.mode_run_close_step++;
                 run_motor.beginChangeStep = true;
             }
-
+            checkCurrentMotor1.stop();
             if(setup_motor.define_time_return[MOTOR_1] != 0 && setup_motor.define_time_return[MOTOR_1] != 255)
             {
                 if(status_forward == MOTOR_OPEN)
                 {
                     close_motor(MOTOR_1);
+                    start_check_motor_stop[MOTOR_1] = false;    //luc return thi khong check van toc nua
                     motorRunReturn1.start();
                 }
                 else if(status_forward == MOTOR_CLOSE)
                 {
                     open_motor(MOTOR_1);
+                    start_check_motor_stop[MOTOR_1] = false;    //luc return thi khong check van toc nua
                     motorRunReturn1.start();
                 }
             }
-            checkCurrentMotor1.stop();
         }
     }
-    
 }
 
 void check_current_motor_2()
 {
-
+    uint8_t status_forward;
+    status_forward = statusCurrentMotor[MOTOR_2];
+    count_to_start_check_current[MOTOR_2]++;
+    if(count_to_start_check_current[MOTOR_2] >= 5)
+    {
+        // if(int(setup_motor.value_current[MOTOR_2]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_2]) > (setup_motor.define_max_current[MOTOR_2]*VALUE_CONVERT))
+        if(int(setup_motor.value_current[MOTOR_2]) > (setup_motor.define_max_current[MOTOR_2]*VALUE_CONVERT))
+        {   
+            count_to_start_check_current[MOTOR_2] = 0;
+            ECHOLN("Qua Tai Motor 2");
+            stop_motor(MOTOR_2);
+            if(is_done_step())
+            {
+                run_motor.mode_run_open_step++;
+                run_motor.mode_run_close_step++;
+                run_motor.beginChangeStep = true;
+            }
+            checkCurrentMotor2.stop();
+            if(setup_motor.define_time_return[MOTOR_2] != 0 && setup_motor.define_time_return[MOTOR_2] != 255)
+            {
+                if(status_forward == MOTOR_OPEN)
+                {
+                    close_motor(MOTOR_2);
+                    start_check_motor_stop[MOTOR_2] = false;    //luc return thi khong check van toc nua
+                    motorRunReturn2.start();
+                }
+                else if(status_forward == MOTOR_CLOSE)
+                {
+                    open_motor(MOTOR_2);
+                    start_check_motor_stop[MOTOR_2] = false;    //luc return thi khong check van toc nua
+                    motorRunReturn2.start();
+                }
+            }
+        }
+    }
 }
 
 void check_current_motor_3()
 {
-
+    uint8_t status_forward;
+    status_forward = statusCurrentMotor[MOTOR_3];
+    count_to_start_check_current[MOTOR_3]++;
+    if(count_to_start_check_current[MOTOR_3] >= 5)
+    {
+        // if(int(setup_motor.value_current[MOTOR_3]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_3]) > (setup_motor.define_max_current[MOTOR_3]*VALUE_CONVERT))
+        if(int(setup_motor.value_current[MOTOR_3]) > (setup_motor.define_max_current[MOTOR_3]*VALUE_CONVERT))
+        {   
+            count_to_start_check_current[MOTOR_3] = 0;
+            ECHOLN("Qua Tai Motor 3");
+            stop_motor(MOTOR_3);
+            if(is_done_step())
+            {
+                run_motor.mode_run_open_step++;
+                run_motor.mode_run_close_step++;
+                run_motor.beginChangeStep = true;
+            }
+            checkCurrentMotor3.stop();
+            if(setup_motor.define_time_return[MOTOR_3] != 0 && setup_motor.define_time_return[MOTOR_3] != 255)
+            {
+                if(status_forward == MOTOR_OPEN)
+                {
+                    close_motor(MOTOR_3);
+                    start_check_motor_stop[MOTOR_3] = false;    //luc return thi khong check van toc nua
+                    motorRunReturn3.start();
+                }
+                else if(status_forward == MOTOR_CLOSE)
+                {
+                    open_motor(MOTOR_3);
+                    start_check_motor_stop[MOTOR_3] = false;    //luc return thi khong check van toc nua
+                    motorRunReturn3.start();
+                }
+            }
+        }
+    }
 }
 
 void check_current_motor_4()
 {
-
+    uint8_t status_forward;
+    status_forward = statusCurrentMotor[MOTOR_4];
+    count_to_start_check_current[MOTOR_4]++;
+    if(count_to_start_check_current[MOTOR_4] >= 5)
+    {
+        // if(int(setup_motor.value_current[MOTOR_4]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_4]) > (setup_motor.define_max_current[MOTOR_4]*VALUE_CONVERT))
+        if(int(setup_motor.value_current[MOTOR_4]) > (setup_motor.define_max_current[MOTOR_4]*VALUE_CONVERT))
+        {   
+            count_to_start_check_current[MOTOR_4] = 0;
+            ECHOLN("Qua Tai Motor 4");
+            stop_motor(MOTOR_4);
+            if(is_done_step())
+            {
+                run_motor.mode_run_open_step++;
+                run_motor.mode_run_close_step++;
+                run_motor.beginChangeStep = true;
+            }
+            checkCurrentMotor4.stop();
+            if(setup_motor.define_time_return[MOTOR_4] != 0 && setup_motor.define_time_return[MOTOR_4] != 255)
+            {
+                if(status_forward == MOTOR_OPEN)
+                {
+                    close_motor(MOTOR_4);
+                    start_check_motor_stop[MOTOR_4] = false;    //luc return thi khong check van toc nua
+                    motorRunReturn4.start();
+                }
+                else if(status_forward == MOTOR_CLOSE)
+                {
+                    open_motor(MOTOR_4);
+                    start_check_motor_stop[MOTOR_4] = false;    //luc return thi khong check van toc nua
+                    motorRunReturn4.start();
+                }
+            }
+        }
+    }
 }
 
 void check_current_motor_5()
 {
-
+    uint8_t status_forward;
+    status_forward = statusCurrentMotor[MOTOR_5];
+    count_to_start_check_current[MOTOR_5]++;
+    if(count_to_start_check_current[MOTOR_5] >= 5)
+    {
+        // if(int(setup_motor.value_current[MOTOR_5]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_5]) > (setup_motor.define_max_current[MOTOR_5]*VALUE_CONVERT))
+        if(int(setup_motor.value_current[MOTOR_5]) > (setup_motor.define_max_current[MOTOR_5]*VALUE_CONVERT))
+        {   
+            count_to_start_check_current[MOTOR_5] = 0;
+            ECHOLN("Qua Tai Motor 5");
+            stop_motor(MOTOR_5);
+            if(is_done_step())
+            {
+                run_motor.mode_run_open_step++;
+                run_motor.mode_run_close_step++;
+                run_motor.beginChangeStep = true;
+            }
+            checkCurrentMotor5.stop();
+            if(setup_motor.define_time_return[MOTOR_5] != 0 && setup_motor.define_time_return[MOTOR_5] != 255)
+            {
+                if(status_forward == MOTOR_OPEN)
+                {
+                    close_motor(MOTOR_5);
+                    start_check_motor_stop[MOTOR_5] = false;    //luc return thi khong check van toc nua
+                    motorRunReturn5.start();
+                }
+                else if(status_forward == MOTOR_CLOSE)
+                {
+                    open_motor(MOTOR_5);
+                    start_check_motor_stop[MOTOR_5] = false;    //luc return thi khong check van toc nua
+                    motorRunReturn5.start();
+                }
+            }
+        }
+    }
 }
 
 void check_current_motor_6()
 {
-
+    uint8_t status_forward;
+    status_forward = statusCurrentMotor[MOTOR_6];
+    count_to_start_check_current[MOTOR_6]++;
+    if(count_to_start_check_current[MOTOR_6] >= 5)
+    {
+        // if(int(setup_motor.value_current[MOTOR_6]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_6]) > (setup_motor.define_max_current[MOTOR_6]*VALUE_CONVERT))
+        if(int(setup_motor.value_current[MOTOR_6]) > (setup_motor.define_max_current[MOTOR_6]*VALUE_CONVERT))
+        {   
+            count_to_start_check_current[MOTOR_6] = 0;
+            ECHOLN("Qua Tai Motor 6");
+            stop_motor(MOTOR_6);
+            if(is_done_step())
+            {
+                run_motor.mode_run_open_step++;
+                run_motor.mode_run_close_step++;
+                run_motor.beginChangeStep = true;
+            }
+            checkCurrentMotor6.stop();
+            if(setup_motor.define_time_return[MOTOR_6] != 0 && setup_motor.define_time_return[MOTOR_6] != 255)
+            {
+                if(status_forward == MOTOR_OPEN)
+                {
+                    close_motor(MOTOR_6);
+                    start_check_motor_stop[MOTOR_6] = false;    //luc return thi khong check van toc nua
+                    motorRunReturn6.start();
+                }
+                else if(status_forward == MOTOR_CLOSE)
+                {
+                    open_motor(MOTOR_6);
+                    start_check_motor_stop[MOTOR_6] = false;    //luc return thi khong check van toc nua
+                    motorRunReturn6.start();
+                }
+            }
+        }
+    }
 }
 
 void returStopMotor1()
@@ -512,23 +695,58 @@ void returStopMotor1()
 }
 void returStopMotor2()
 {
-    
+    static uint8_t return_stop_motor_2 = 0;
+    return_stop_motor_2++;
+    if(return_stop_motor_2 == setup_motor.define_time_return[MOTOR_2])
+    {
+        return_stop_motor_2 = 0;
+        stop_motor(MOTOR_2);
+        motorRunReturn2.stop();
+    }
 }
 void returStopMotor3()
 {
-    
+    static uint8_t return_stop_motor_3 = 0;
+    return_stop_motor_3++;
+    if(return_stop_motor_3 == setup_motor.define_time_return[MOTOR_3])
+    {
+        return_stop_motor_3 = 0;
+        stop_motor(MOTOR_3);
+        motorRunReturn3.stop();
+    }
 }
 void returStopMotor4()
 {
-    
+    static uint8_t return_stop_motor_4 = 0;
+    return_stop_motor_4++;
+    if(return_stop_motor_4 == setup_motor.define_time_return[MOTOR_4])
+    {
+        return_stop_motor_4 = 0;
+        stop_motor(MOTOR_4);
+        motorRunReturn4.stop();
+    }
 }
 void returStopMotor5()
 {
-    
+    static uint8_t return_stop_motor_5 = 0;
+    return_stop_motor_5++;
+    if(return_stop_motor_5 == setup_motor.define_time_return[MOTOR_5])
+    {
+        return_stop_motor_5 = 0;
+        stop_motor(MOTOR_5);
+        motorRunReturn5.stop();
+    }
 }
 void returStopMotor6()
 {
-    
+    static uint8_t return_stop_motor_6 = 0;
+    return_stop_motor_6++;
+    if(return_stop_motor_6 == setup_motor.define_time_return[MOTOR_6])
+    {
+        return_stop_motor_6 = 0;
+        stop_motor(MOTOR_6);
+        motorRunReturn6.stop();
+    }
 }
 
 
@@ -696,6 +914,39 @@ void checkButtonControl()
 
 }
 
+void checkStartCalCurrent()
+{
+    if(start_check_motor_stop[MOTOR_1])
+    {
+        start_check_motor_stop[MOTOR_1] = false;
+        checkCurrentMotor1.start();
+    }
+    if(start_check_motor_stop[MOTOR_2])
+    {
+        start_check_motor_stop[MOTOR_2] = false;
+        checkCurrentMotor2.start();
+    }
+    if(start_check_motor_stop[MOTOR_3])
+    {
+        start_check_motor_stop[MOTOR_3] = false;
+        checkCurrentMotor3.start();
+    }
+    if(start_check_motor_stop[MOTOR_4])
+    {
+        start_check_motor_stop[MOTOR_4] = false;
+        checkCurrentMotor4.start();
+    }
+    if(start_check_motor_stop[MOTOR_5])
+    {
+        start_check_motor_stop[MOTOR_5] = false;
+        checkCurrentMotor5.start();
+    }
+    if(start_check_motor_stop[MOTOR_6])
+    {
+        start_check_motor_stop[MOTOR_6] = false;
+        checkCurrentMotor6.start();
+    }
+}
 
 void tickerUpdate()
 {
@@ -713,6 +964,25 @@ void tickerUpdate()
     motorRunReturn5.update();
     motorRunReturn6.update();
     sendDatatoAppTicker.update();
+}
+
+void checkButtonConfigModeRun()
+{
+    static bool check_mode_setup = true;
+    if(!digitalRead(BTN_MODE_SETUP) && check_mode_setup)
+    {
+        delay(100);
+        ECHOLN("MODE SETUP");
+        check_mode_setup = false;
+        run_motor.isModeConfig = true;
+    }
+    else if(digitalRead(BTN_MODE_SETUP) && !check_mode_setup)
+    {
+        delay(100);
+        ECHOLN("MODE RUN");
+        check_mode_setup = true;
+        run_motor.isModeConfig = false;
+    }
 }
 
 void setup()
@@ -750,12 +1020,9 @@ void loop()
     
     readValueIna219();
     tickerUpdate();
-
-    if(start_check_motor_stop[MOTOR_1])
-    {
-        start_check_motor_stop[MOTOR_1] = false;
-        checkCurrentMotor1.start();
-    }
+    checkStartCalCurrent();
+    
+    checkButtonConfigModeRun();
 
     if(!run_motor.isModeConfig)
     {
@@ -770,11 +1037,11 @@ void loop()
                     ECHOLN("START MODE RUN OPEN STEP 1");
                     run_motor.beginChangeStep = false;
                     open_motor(MOTOR_1);
-                    checkCurrentMotor1.start();
+                    // checkCurrentMotor1.start();
                     open_motor(MOTOR_2);
-                    checkCurrentMotor2.start();
+                    // checkCurrentMotor2.start();
                     open_motor(MOTOR_3);
-                    checkCurrentMotor3.start();
+                    // checkCurrentMotor3.start();
                     stop_motor(MOTOR_4);
                     stop_motor(MOTOR_5);
                     stop_motor(MOTOR_6);
@@ -789,22 +1056,22 @@ void loop()
                     stop_motor(MOTOR_2);
                     stop_motor(MOTOR_3);
                     open_motor(MOTOR_4);
-                    checkCurrentMotor4.start();
+                    // checkCurrentMotor4.start();
                     open_motor(MOTOR_5);
-                    checkCurrentMotor5.start();
+                    // checkCurrentMotor5.start();
                     open_motor(MOTOR_6);
-                    checkCurrentMotor6.start();
+                    // checkCurrentMotor6.start();
                 }
                 break;
             case OPEN_STEP_3:
                 if(run_motor.beginChangeStep)
                 {
-                    ECHOLN("START MODE RUN OPEN STEP 2");
+                    ECHOLN("START MODE RUN OPEN STEP 3");
                     run_motor.beginChangeStep = false;
                     close_motor(MOTOR_1);
-                    checkCurrentMotor1.start();
+                    // checkCurrentMotor1.start();
                     close_motor(MOTOR_2);
-                    checkCurrentMotor2.start();
+                    // checkCurrentMotor2.start();
                     stop_motor(MOTOR_3);
                     stop_motor(MOTOR_4);
                     stop_motor(MOTOR_5);
@@ -831,9 +1098,9 @@ void loop()
                     ECHOLN("START MODE RUN CLOSE STEP 1");
                     run_motor.beginChangeStep = false;
                     open_motor(MOTOR_1);
-                    checkCurrentMotor1.start();
+                    // checkCurrentMotor1.start();
                     open_motor(MOTOR_2);
-                    checkCurrentMotor2.start();
+                    // checkCurrentMotor2.start();
                     stop_motor(MOTOR_3);
                     stop_motor(MOTOR_4);
                     stop_motor(MOTOR_5);
@@ -849,24 +1116,24 @@ void loop()
                     stop_motor(MOTOR_2);
                     stop_motor(MOTOR_3);
                     close_motor(MOTOR_4);
-                    checkCurrentMotor4.start();
+                    // checkCurrentMotor4.start();
                     close_motor(MOTOR_5);
-                    checkCurrentMotor5.start();
+                    // checkCurrentMotor5.start();
                     close_motor(MOTOR_6);
-                    checkCurrentMotor6.start();
+                    // checkCurrentMotor6.start();
                 }
                 break;
             case CLOSE_STEP_3:
                 if(run_motor.beginChangeStep)
                 {
-                    ECHOLN("START MODE RUN CLOSE STEP 2");
+                    ECHOLN("START MODE RUN CLOSE STEP 3");
                     run_motor.beginChangeStep = false;
                     close_motor(MOTOR_1);
-                    checkCurrentMotor1.start();
+                    // checkCurrentMotor1.start();
                     close_motor(MOTOR_2);
-                    checkCurrentMotor2.start();
+                    // checkCurrentMotor2.start();
                     close_motor(MOTOR_3);
-                    checkCurrentMotor3.start();
+                    // checkCurrentMotor3.start();
                     stop_motor(MOTOR_4);
                     stop_motor(MOTOR_5);
                     stop_motor(MOTOR_6);

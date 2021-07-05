@@ -63,14 +63,16 @@ void returStopMotor4();
 void returStopMotor5();
 void returStopMotor6();
 void checkButtonControl();
+void checkStartCalCurrent();
 void tickerUpdate();
+void checkButtonConfigModeRun();
 
-Ticker checkCurrentMotor1(check_current_motor_1, 300);   //every 300ms
-Ticker checkCurrentMotor2(check_current_motor_2, 300);   //every 300ms
-Ticker checkCurrentMotor3(check_current_motor_3, 300);   //every 300ms
-Ticker checkCurrentMotor4(check_current_motor_4, 300);   //every 300ms
-Ticker checkCurrentMotor5(check_current_motor_5, 300);   //every 300ms
-Ticker checkCurrentMotor6(check_current_motor_6, 300);   //every 300ms
+Ticker checkCurrentMotor1(check_current_motor_1, 100);   //every 100ms
+Ticker checkCurrentMotor2(check_current_motor_2, 100);   //every 100ms
+Ticker checkCurrentMotor3(check_current_motor_3, 100);   //every 100ms
+Ticker checkCurrentMotor4(check_current_motor_4, 100);   //every 100ms
+Ticker checkCurrentMotor5(check_current_motor_5, 100);   //every 100ms
+Ticker checkCurrentMotor6(check_current_motor_6, 100);   //every 100ms
 Ticker sendDatatoAppTicker(sendDatatoApp, 1000);   //every 500ms
 
 Ticker motorRunReturn1(returStopMotor1, 10);   //every 10ms
