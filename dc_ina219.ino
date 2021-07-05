@@ -85,6 +85,19 @@ void sendDatatoApp()
     data += String(setup_motor.define_time_return[MOTOR_5]*VALUE_CONVERT);
     data += "\",\"64\":\"";
     data += String(setup_motor.define_time_return[MOTOR_6]*VALUE_CONVERT);
+
+    data += "\",\"15\":\"";
+    data += String(setup_motor.define_min_current[MOTOR_1]);
+    data += "\",\"25\":\"";
+    data += String(setup_motor.define_min_current[MOTOR_2]);
+    data += "\",\"35\":\"";
+    data += String(setup_motor.define_min_current[MOTOR_3]);
+    data += "\",\"45\":\"";
+    data += String(setup_motor.define_min_current[MOTOR_4]);
+    data += "\",\"55\":\"";
+    data += String(setup_motor.define_min_current[MOTOR_5]);
+    data += "\",\"65\":\"";
+    data += String(setup_motor.define_min_current[MOTOR_6]);
     data += "\"}";
     for(int i = 0; i<data.length(); i++){
         SerialBT.write(data[i]);
@@ -172,6 +185,25 @@ void loadDataBegin()
     setup_motor.define_time_return[MOTOR_6] = EEPROM.read(EEPROM_TIME_RETURN_6);
     ECHO("time_return[MOTOR_6] : ");
     ECHOLN(setup_motor.define_time_return[MOTOR_6]*VALUE_CONVERT);
+
+    setup_motor.define_min_current[MOTOR_1] = EEPROM.read(EEPROM_MIN_CURRENT_1);
+    ECHO("define_min_current[MOTOR_1] : ");
+    ECHOLN(setup_motor.define_min_current[MOTOR_1]);
+    setup_motor.define_min_current[MOTOR_2] = EEPROM.read(EEPROM_MIN_CURRENT_2);
+    ECHO("define_min_current[MOTOR_2] : ");
+    ECHOLN(setup_motor.define_min_current[MOTOR_2]);
+    setup_motor.define_min_current[MOTOR_3] = EEPROM.read(EEPROM_MIN_CURRENT_3);
+    ECHO("define_min_current[MOTOR_3] : ");
+    ECHOLN(setup_motor.define_min_current[MOTOR_3]);
+    setup_motor.define_min_current[MOTOR_4] = EEPROM.read(EEPROM_MIN_CURRENT_4);
+    ECHO("define_min_current[MOTOR_4] : ");
+    ECHOLN(setup_motor.define_min_current[MOTOR_4]);
+    setup_motor.define_min_current[MOTOR_5] = EEPROM.read(EEPROM_MIN_CURRENT_5);
+    ECHO("define_min_current[MOTOR_5] : ");
+    ECHOLN(setup_motor.define_min_current[MOTOR_5]);
+    setup_motor.define_min_current[MOTOR_6] = EEPROM.read(EEPROM_MIN_CURRENT_6);
+    ECHO("define_min_current[MOTOR_6] : ");
+    ECHOLN(setup_motor.define_max_current[MOTOR_6]);
 }
 
 
@@ -355,6 +387,7 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                     else if(type == "save_data")
                     {
                         String max_current = rootData["max_current"];
+                        String min_current = rootData["min_current"];
                         String time_return = rootData["time_return"];
                         if(name == "0")
                         {
@@ -363,6 +396,12 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                                 setup_motor.define_max_current[MOTOR_1] = max_current.toInt()/VALUE_CONVERT;
                                 // ECHOLN(setup_motor.define_max_current[MOTOR_1]);
                                 EEPROM.write(EEPROM_MAX_CURRENT_1,setup_motor.define_max_current[MOTOR_1]);
+                            }
+                            if(min_current != "")
+                            {
+                                setup_motor.define_min_current[MOTOR_1] = min_current.toInt();
+                                // ECHOLN(setup_motor.define_max_current[MOTOR_1]);
+                                EEPROM.write(EEPROM_MIN_CURRENT_1,setup_motor.define_min_current[MOTOR_1]);
                             }
                             if(time_return != "")
                             {
@@ -378,6 +417,12 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                                 setup_motor.define_max_current[MOTOR_2] = max_current.toInt()/VALUE_CONVERT;
                                 EEPROM.write(EEPROM_MAX_CURRENT_2,setup_motor.define_max_current[MOTOR_2]);
                             }
+                            if(min_current != "")
+                            {
+                                setup_motor.define_min_current[MOTOR_2] = min_current.toInt();
+                                // ECHOLN(setup_motor.define_max_current[MOTOR_2]);
+                                EEPROM.write(EEPROM_MIN_CURRENT_2,setup_motor.define_min_current[MOTOR_2]);
+                            }
                             if(time_return != "")
                             {
                                 setup_motor.define_time_return[MOTOR_2] = time_return.toInt()/VALUE_CONVERT;
@@ -390,6 +435,12 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                             {
                                 setup_motor.define_max_current[MOTOR_3] = max_current.toInt()/VALUE_CONVERT;
                                 EEPROM.write(EEPROM_MAX_CURRENT_3,setup_motor.define_max_current[MOTOR_3]);
+                            }
+                            if(min_current != "")
+                            {
+                                setup_motor.define_min_current[MOTOR_3] = min_current.toInt();
+                                // ECHOLN(setup_motor.define_max_current[MOTOR_3]);
+                                EEPROM.write(EEPROM_MIN_CURRENT_3,setup_motor.define_min_current[MOTOR_3]);
                             }
                             if(time_return != "")
                             {
@@ -404,6 +455,12 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                                 setup_motor.define_max_current[MOTOR_4] = max_current.toInt()/VALUE_CONVERT;
                                 EEPROM.write(EEPROM_MAX_CURRENT_4,setup_motor.define_max_current[MOTOR_4]);
                             }
+                            if(min_current != "")
+                            {
+                                setup_motor.define_min_current[MOTOR_4] = min_current.toInt();
+                                // ECHOLN(setup_motor.define_max_current[MOTOR_4]);
+                                EEPROM.write(EEPROM_MIN_CURRENT_4,setup_motor.define_min_current[MOTOR_4]);
+                            }
                             if(time_return != "")
                             {
                                 setup_motor.define_time_return[MOTOR_4] = time_return.toInt()/VALUE_CONVERT;
@@ -417,6 +474,12 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                                 setup_motor.define_max_current[MOTOR_5] = max_current.toInt()/VALUE_CONVERT;
                                 EEPROM.write(EEPROM_MAX_CURRENT_5,setup_motor.define_max_current[MOTOR_5]);
                             }
+                            if(min_current != "")
+                            {
+                                setup_motor.define_min_current[MOTOR_5] = min_current.toInt();
+                                // ECHOLN(setup_motor.define_max_current[MOTOR_5]);
+                                EEPROM.write(EEPROM_MIN_CURRENT_5,setup_motor.define_min_current[MOTOR_5]);
+                            }
                             if(time_return != "")
                             {
                                 setup_motor.define_time_return[MOTOR_5] = time_return.toInt()/VALUE_CONVERT;
@@ -429,6 +492,12 @@ void callbackBluetooth(esp_spp_cb_event_t event, esp_spp_cb_param_t *param)
                             {
                                 setup_motor.define_max_current[MOTOR_6] = max_current.toInt()/VALUE_CONVERT;
                                 EEPROM.write(EEPROM_MAX_CURRENT_6,setup_motor.define_max_current[MOTOR_6]);
+                            }
+                            if(min_current != "")
+                            {
+                                setup_motor.define_min_current[MOTOR_6] = min_current.toInt();
+                                // ECHOLN(setup_motor.define_max_current[MOTOR_6]);
+                                EEPROM.write(EEPROM_MIN_CURRENT_6,setup_motor.define_min_current[MOTOR_6]);
                             }
                             if(time_return != "")
                             {
@@ -455,8 +524,9 @@ void check_current_motor_1()
     count_to_start_check_current[MOTOR_1]++;
     if(count_to_start_check_current[MOTOR_1] >= 5)
     {
-        // if(int(setup_motor.value_current[MOTOR_1]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_1]) > (setup_motor.define_max_current[MOTOR_1]*VALUE_CONVERT))
-        if(int(setup_motor.value_current[MOTOR_1]) > (setup_motor.define_max_current[MOTOR_1]*VALUE_CONVERT))
+         if(int(setup_motor.value_current[MOTOR_1]) < setup_motor.define_min_current[MOTOR_1] 
+         || int(setup_motor.value_current[MOTOR_1]) > (setup_motor.define_max_current[MOTOR_1]*VALUE_CONVERT))
+//        if(int(setup_motor.value_current[MOTOR_1]) > (setup_motor.define_max_current[MOTOR_1]*VALUE_CONVERT))
         {   
             count_to_start_check_current[MOTOR_1] = 0;
             ECHOLN("Qua Tai Motor 1");
@@ -494,8 +564,9 @@ void check_current_motor_2()
     count_to_start_check_current[MOTOR_2]++;
     if(count_to_start_check_current[MOTOR_2] >= 5)
     {
-        // if(int(setup_motor.value_current[MOTOR_2]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_2]) > (setup_motor.define_max_current[MOTOR_2]*VALUE_CONVERT))
-        if(int(setup_motor.value_current[MOTOR_2]) > (setup_motor.define_max_current[MOTOR_2]*VALUE_CONVERT))
+         if(int(setup_motor.value_current[MOTOR_2]) < setup_motor.define_min_current[MOTOR_2] 
+         || int(setup_motor.value_current[MOTOR_2]) > (setup_motor.define_max_current[MOTOR_2]*VALUE_CONVERT))
+//        if(int(setup_motor.value_current[MOTOR_2]) > (setup_motor.define_max_current[MOTOR_2]*VALUE_CONVERT))
         {   
             count_to_start_check_current[MOTOR_2] = 0;
             ECHOLN("Qua Tai Motor 2");
@@ -533,8 +604,9 @@ void check_current_motor_3()
     count_to_start_check_current[MOTOR_3]++;
     if(count_to_start_check_current[MOTOR_3] >= 5)
     {
-        // if(int(setup_motor.value_current[MOTOR_3]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_3]) > (setup_motor.define_max_current[MOTOR_3]*VALUE_CONVERT))
-        if(int(setup_motor.value_current[MOTOR_3]) > (setup_motor.define_max_current[MOTOR_3]*VALUE_CONVERT))
+        if(int(setup_motor.value_current[MOTOR_3]) < setup_motor.define_min_current[MOTOR_3] 
+        || int(setup_motor.value_current[MOTOR_3]) > (setup_motor.define_max_current[MOTOR_3]*VALUE_CONVERT))
+        // if(int(setup_motor.value_current[MOTOR_3]) > (setup_motor.define_max_current[MOTOR_3]*VALUE_CONVERT))
         {   
             count_to_start_check_current[MOTOR_3] = 0;
             ECHOLN("Qua Tai Motor 3");
@@ -572,8 +644,9 @@ void check_current_motor_4()
     count_to_start_check_current[MOTOR_4]++;
     if(count_to_start_check_current[MOTOR_4] >= 5)
     {
-        // if(int(setup_motor.value_current[MOTOR_4]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_4]) > (setup_motor.define_max_current[MOTOR_4]*VALUE_CONVERT))
-        if(int(setup_motor.value_current[MOTOR_4]) > (setup_motor.define_max_current[MOTOR_4]*VALUE_CONVERT))
+        if(int(setup_motor.value_current[MOTOR_4]) < setup_motor.define_min_current[MOTOR_4] 
+        || int(setup_motor.value_current[MOTOR_4]) > (setup_motor.define_max_current[MOTOR_4]*VALUE_CONVERT))
+        // if(int(setup_motor.value_current[MOTOR_4]) > (setup_motor.define_max_current[MOTOR_4]*VALUE_CONVERT))
         {   
             count_to_start_check_current[MOTOR_4] = 0;
             ECHOLN("Qua Tai Motor 4");
@@ -611,8 +684,9 @@ void check_current_motor_5()
     count_to_start_check_current[MOTOR_5]++;
     if(count_to_start_check_current[MOTOR_5] >= 5)
     {
-        // if(int(setup_motor.value_current[MOTOR_5]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_5]) > (setup_motor.define_max_current[MOTOR_5]*VALUE_CONVERT))
-        if(int(setup_motor.value_current[MOTOR_5]) > (setup_motor.define_max_current[MOTOR_5]*VALUE_CONVERT))
+        if(int(setup_motor.value_current[MOTOR_5]) < setup_motor.define_min_current[MOTOR_5] 
+        || int(setup_motor.value_current[MOTOR_5]) > (setup_motor.define_max_current[MOTOR_5]*VALUE_CONVERT))
+        // if(int(setup_motor.value_current[MOTOR_5]) > (setup_motor.define_max_current[MOTOR_5]*VALUE_CONVERT))
         {   
             count_to_start_check_current[MOTOR_5] = 0;
             ECHOLN("Qua Tai Motor 5");
@@ -650,8 +724,9 @@ void check_current_motor_6()
     count_to_start_check_current[MOTOR_6]++;
     if(count_to_start_check_current[MOTOR_6] >= 5)
     {
-        // if(int(setup_motor.value_current[MOTOR_6]) < MIN_CURRENT_MOTOR || int(setup_motor.value_current[MOTOR_6]) > (setup_motor.define_max_current[MOTOR_6]*VALUE_CONVERT))
-        if(int(setup_motor.value_current[MOTOR_6]) > (setup_motor.define_max_current[MOTOR_6]*VALUE_CONVERT))
+        if(int(setup_motor.value_current[MOTOR_6]) < setup_motor.define_min_current[MOTOR_6] 
+        || int(setup_motor.value_current[MOTOR_6]) > (setup_motor.define_max_current[MOTOR_6]*VALUE_CONVERT))
+        // if(int(setup_motor.value_current[MOTOR_6]) > (setup_motor.define_max_current[MOTOR_6]*VALUE_CONVERT))
         {   
             count_to_start_check_current[MOTOR_6] = 0;
             ECHOLN("Qua Tai Motor 6");

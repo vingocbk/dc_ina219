@@ -60,6 +60,13 @@
 #define EEPROM_TIME_RETURN_4    10
 #define EEPROM_TIME_RETURN_5    11
 #define EEPROM_TIME_RETURN_6    12
+#define EEPROM_MIN_CURRENT_1    13
+#define EEPROM_MIN_CURRENT_2    14
+#define EEPROM_MIN_CURRENT_3    15
+#define EEPROM_MIN_CURRENT_4    16
+#define EEPROM_MIN_CURRENT_5    17
+#define EEPROM_MIN_CURRENT_6    18
+
 
 
 #define VALUE_CONVERT           10
