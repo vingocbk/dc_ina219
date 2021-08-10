@@ -57,75 +57,20 @@ struct _stepMode
 struct motor
 {
     // uint116_t 
-    unsigned int open_motor[MAX_NUMBER_MOTOR];
-    unsigned int stop_motor[MAX_NUMBER_MOTOR];
-    unsigned int close_motor[MAX_NUMBER_MOTOR];
+    uint32_t open_motor[MAX_NUMBER_MOTOR];
+    uint32_t stop_motor[MAX_NUMBER_MOTOR];
+    uint32_t close_motor[MAX_NUMBER_MOTOR];
 
-    unsigned int open_motor_1;
-    unsigned int stop_motor_1;
-    unsigned int close_motor_1;
-
-    unsigned int open_motor_2;
-    unsigned int stop_motor_2;
-    unsigned int close_motor_2;
-
-    unsigned int open_motor_3;
-    unsigned int stop_motor_3;
-    unsigned int close_motor_3;
-
-    unsigned int open_motor_4;
-    unsigned int stop_motor_4;
-    unsigned int close_motor_4;
-
-    unsigned int open_motor_5;
-    unsigned int stop_motor_5;
-    unsigned int close_motor_5;
-
-    unsigned int open_motor_6;
-    unsigned int stop_motor_6;
-    unsigned int close_motor_6;
-
-    unsigned int convert_data_motor;
+    uint32_t convert_data_motor;
     char *data_send_motor;
     
 
     //-------------------------------
-    unsigned int on_led[MAX_NUMBER_LED];
-    unsigned int off_led[MAX_NUMBER_LED];
-    unsigned int on_led_r;
-    unsigned int off_led_r;
+    uint32_t open_led[MAX_NUMBER_LED];
+    uint32_t stop_led[MAX_NUMBER_LED];
+    uint32_t close_led[MAX_NUMBER_LED];
 
-    unsigned int on_led_g;
-    unsigned int off_led_g;
-
-    unsigned int on_led_b;
-    unsigned int off_led_b;
-
-    unsigned int on_led_1;
-    unsigned int off_led_1;
-
-    unsigned int on_led_2;
-    unsigned int off_led_2;
-
-    unsigned int on_led_3;
-    unsigned int off_led_3;
-
-    unsigned int on_led_4;
-    unsigned int off_led_4;
-    
-    unsigned int on_led_5;
-    unsigned int off_led_5;
-
-    unsigned int on_led_6;
-    unsigned int off_led_6;
-
-    unsigned int on_led_7;
-    unsigned int off_led_7;
-    
-    unsigned int on_led_8;
-    unsigned int off_led_8;
-
-    unsigned int convert_data_led;
+    uint32_t convert_data_led;
     char *data_send_led;
 };
 

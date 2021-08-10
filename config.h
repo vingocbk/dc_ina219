@@ -41,10 +41,10 @@
 #define ADDRESS_INA_M10         0x49
 #define ADDRESS_INA_M11         0x50
 
-#define MAX_ALL_MOTOR           6
-#define MAX_NUMBER_MOTOR        6
+#define MAX_ALL_MOTOR           9
+#define MAX_NUMBER_MOTOR        9
 // #define MAX_ALL_MOTOR           12
-#define MAX_NUMBER_LED          16
+#define MAX_NUMBER_LED          18
 #define MAX_RESPONSE_LENGTH     512
 
 #define MAX_SIZE_EEPROM_BUFFER  512
@@ -54,18 +54,35 @@
 #define EEPROM_MAX_CURRENT_4    4
 #define EEPROM_MAX_CURRENT_5    5
 #define EEPROM_MAX_CURRENT_6    6
-#define EEPROM_TIME_RETURN_1    7
-#define EEPROM_TIME_RETURN_2    8
-#define EEPROM_TIME_RETURN_3    9
-#define EEPROM_TIME_RETURN_4    10
-#define EEPROM_TIME_RETURN_5    11
-#define EEPROM_TIME_RETURN_6    12
-#define EEPROM_MIN_CURRENT_1    13
-#define EEPROM_MIN_CURRENT_2    14
-#define EEPROM_MIN_CURRENT_3    15
-#define EEPROM_MIN_CURRENT_4    16
-#define EEPROM_MIN_CURRENT_5    17
-#define EEPROM_MIN_CURRENT_6    18
+#define EEPROM_MAX_CURRENT_7    7
+#define EEPROM_MAX_CURRENT_8    8
+#define EEPROM_MAX_CURRENT_9    9
+// #define EEPROM_TIME_RETURN_1    7
+// #define EEPROM_TIME_RETURN_2    8
+// #define EEPROM_TIME_RETURN_3    9
+// #define EEPROM_TIME_RETURN_4    10
+// #define EEPROM_TIME_RETURN_5    11
+// #define EEPROM_TIME_RETURN_6    12
+
+#define EEPROM_MIN_CURRENT_1        13
+#define EEPROM_MIN_CURRENT_2        14
+#define EEPROM_MIN_CURRENT_3        15
+#define EEPROM_MIN_CURRENT_4        16
+#define EEPROM_MIN_CURRENT_5        17
+#define EEPROM_MIN_CURRENT_6        18
+#define EEPROM_MIN_CURRENT_7        19
+#define EEPROM_MIN_CURRENT_8        20
+#define EEPROM_MIN_CURRENT_9        21
+
+#define EEPROM_REVERSE_MOTOR_1    22
+#define EEPROM_REVERSE_MOTOR_2    23
+#define EEPROM_REVERSE_MOTOR_3    24
+#define EEPROM_REVERSE_MOTOR_4    25
+#define EEPROM_REVERSE_MOTOR_5    26
+#define EEPROM_REVERSE_MOTOR_6    27
+#define EEPROM_REVERSE_MOTOR_7    28
+#define EEPROM_REVERSE_MOTOR_8    29
+#define EEPROM_REVERSE_MOTOR_9    30
 
 
 
@@ -80,7 +97,10 @@ enum
     MOTOR_3,
     MOTOR_4,
     MOTOR_5,
-    MOTOR_6
+    MOTOR_6,
+    MOTOR_7,
+    MOTOR_8,
+    MOTOR_9
 };
 
 
